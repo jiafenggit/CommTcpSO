@@ -7,7 +7,11 @@
  * 其    他   : 
  * 修改日志   : 
 ***********************************************************************************/
+#ifndef _COMMTOTCPTHREAD_H_
+#define _COMMTOTCPTHREAD_H_
+
 
 void* CommToTcpThread(void* arg);//串口转TCP线程
 
+#endif
 

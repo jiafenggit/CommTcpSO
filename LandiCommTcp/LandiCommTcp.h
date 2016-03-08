@@ -7,26 +7,11 @@
  * 其    他   : 
  * 修改日志   : 
 ***********************************************************************************/
+#ifndef _LANDICOMMTCP_H_
+#define _LANDICOMMTCP_H_
 
-#include <stdio.h>
-#include <syslog.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <errno.h>
-#include <unistd.h>
+int StartCommTcpMap(int fdComm, int fdTcp);//串口和TCP映射入口
+int EndCommTcpMap(void);//结束串口TCP互转
 
-
-int TMS_CommTcp(int CommFD, int TcpFD)
-{
-	int iRet = 0;
-
-	//TODO:初始化通讯参数
-
-	//TODO:创建两个线程
-
-	//TODO:等待线程结束
-
-	return iRet;
-}
-
+#endif
 

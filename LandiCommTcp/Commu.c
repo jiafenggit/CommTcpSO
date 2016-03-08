@@ -7,13 +7,24 @@
  * 其    他   :
  * 修改日志   :
 ***********************************************************************************/
-
-
-#include<sys/types.h>
-#include<sys/socket.h>
+#include <stdio.h>      
+#include <stdlib.h>     
+#include <unistd.h>     
+#include <sys/types.h>  
+#include <sys/stat.h> 
+#include <sys/types.h>
+#include <sys/socket.h>  
+#include <fcntl.h>      
+#include <termios.h>    
+#include <errno.h>      
+#include <string.h>
+#include <memory.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <signal.h>
 
 #include "Commu.h"
-
+#include "MyLog.h"
 
 //通讯参数全局变量
 static CommPara s_CommPara;
@@ -40,17 +51,18 @@ int initCommPara(int fdComm, int fdSocket)
 	//判断串口的状态是否为阻塞状态
 	if(fcntl(fdComm, F_SETFL, 0) < 0)
 	{
-//		printf("fcntl failed!/n");
+		syslog(LOG_DEBUG, "fcntl failed!/n");
 		return -1;
 	}
 	else
 	{
-//		printf("fcntl=%d/n",fcntl(fd, F_SETFL,0));
+		syslog(LOG_DEBUG, "fcntl=%d/n", fcntl(fdComm, F_SETFL,0));
 	}
 
 	//设置服务器侦听队列的长度
 	if(listen(s_CommPara.fdSocket, 5) <0)
 	{
+		syslog(LOG_DEBUG, "listen tcp server failed! /n");
 		return -1;
 	}
 
@@ -83,6 +95,7 @@ int CommSend(char *pDataBuf, unsigned int iDataLen)
 	else
 	{
 		tcflush(s_CommPara.fdComm, TCOFLUSH);
+		syslog(LOG_DEBUG, "comm write failed!/n");
 		return -1;
 	}
 }
@@ -108,12 +121,9 @@ int CommRecv(char *pDataBuf, unsigned int iDataLen)
 	char szTmpBuf[8] = {0};
 
 	iLen = read(s_CommPara.fdComm, szTmpBuf, iLen);
-	if(iLen > 0)
+	if(iLen <= 0)
 	{
-	}
-	else
-	{
-		iRet = -1;
+		syslog(LOG_DEBUG, "read failed! /n");
 	}
 
 	return iRet;
@@ -137,7 +147,7 @@ int TcpSend(char *pDataBuf, unsigned int iDataLen)
 {
 	int iLen = 0;
 
-	iLen = send(s_CommPara.fdSocket, pDataBuf, iDataLen);
+	iLen = send(s_CommPara.fdSocket, pDataBuf, iDataLen, 0);
 
 	return iLen;
 }

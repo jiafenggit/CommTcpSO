@@ -7,6 +7,9 @@
  * 其    他   : 
  * 修改日志   : 
 ***********************************************************************************/
+#ifndef _COMMU_H_
+#define _COMMU_H_
+
 
 //通讯参数结构
 typedef struct
@@ -15,6 +18,9 @@ typedef struct
 	int fdSocket;        //TCP句柄
 }CommPara;
 
+
+#define DATE_BUF_LEN 36*1024
+
 int initCommPara(int fdComm, int fdSocket);//初始化通讯参数
 int CommSend(char *pDataBuf, unsigned int iDataLen);//串口发送数据
 int CommRecv(char *pDataBuf, unsigned int iDataLen);//串口接收数据
@@ -22,4 +28,5 @@ int TcpSend(char *pDataBuf, unsigned int iDataLen);//TCP发送数据
 int TcpRecv(char *pDataBuf, unsigned int iDataLen);//TCP接收数据
 int CloseComm(void);//关闭通讯连接
 
+#endif
 

@@ -7,8 +7,10 @@
  * 其    他   : 
  * 修改日志   : 
 ***********************************************************************************/
+#ifndef _TCPTOCOMMTHREAD_H_
+#define _TCPTOCOMMTHREAD_H_
 
 void* TcpToCommThread(void* arg);//TCP转串口线程
 
-
+#endif
 

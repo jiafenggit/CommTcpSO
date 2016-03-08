@@ -10,6 +10,7 @@
 #include <stdio.h>
 
 #include "Commu.h"
+#include "MyLog.h"
 
 /*****************************************************************************
  * º¯ Êý Ãû     : CommToTcpThread
@@ -26,7 +27,30 @@
 *****************************************************************************/
 void* CommToTcpThread(void* arg)
 {
+	char szDataBuf[DATE_BUF_LEN] = {0};
+	unsigned int iDataLen = 0;
 	int iRet = 0;
+
+	while(1)
+	{
+		iRet = CommRecv(szDataBuf, iDataLen);
+		if(iRet <= 0)
+		{
+			continue;
+		}
+		else
+		{
+			iDataLen = iRet;
+			iRet = 0;
+		}
+
+		iRet = TcpSend(szDataBuf, iDataLen);
+		if(iRet <= 0)
+		{
+			//TODO:log
+			syslog(LOG_DEBUG, "TcpSend failed! /n");
+		}
+	}
 }
 
 
