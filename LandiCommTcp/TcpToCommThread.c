@@ -47,7 +47,7 @@ void* TcpToCommThread(void* arg)
 		if(iRet <= 0)
 		{
 			//TODO:log
-			syslog(LOG_DEBUG, "CommSend failed! /n");
+			LOG("CommSend failed!");
 		}
 	}
 }

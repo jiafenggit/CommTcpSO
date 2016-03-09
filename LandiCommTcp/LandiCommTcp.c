@@ -40,14 +40,15 @@ int StartCommTcpMap(int fdComm, int fdTcp)
 	pthread_t tCommToTcpID, tTcpToCommID;
 	void *tRet = NULL;
 
+	printf("StartCommTcpMap\n");
+
 	//打开日志文件
-	openlog("LandiCommTcpLog", LOG_CONS | LOG_PID, 0);
-	syslog(LOG_DEBUG, "Start CommTcpMap so! /n");
+	OpenMyLog();
 
 	//初始化通讯参数
 	if((iRet = initCommPara(fdComm, fdTcp)) != 0)
 	{
-		syslog(LOG_DEBUG, "initCommPara failed! /n");
+		LOG("initCommPara failed!");
 		return iRet;
 	}
 
@@ -55,14 +56,14 @@ int StartCommTcpMap(int fdComm, int fdTcp)
 	iRet = pthread_create(&tCommToTcpID, NULL, CommToTcpThread, NULL);
 	if(iRet != 0)
 	{
-		syslog(LOG_DEBUG, "pthread_create failed! /n");
+		LOG("pthread_create failed!");
 		return iRet;
 	}
 	
 	iRet = pthread_create(&tTcpToCommID, NULL, TcpToCommThread, NULL);
 	if(iRet != 0)
 	{
-		syslog(LOG_DEBUG, "pthread_create failed! /n");
+		LOG("pthread_create failed!");
 		return iRet;
 	}
 
@@ -101,10 +102,10 @@ int EndCommTcpMap(void)
 	iRet = CloseComm();
 	if(iRet <= 0)
 	{
-		syslog(LOG_DEBUG, "CloseComm failed! /n");
+		LOG("CloseComm failed!");
 	}
 
-	closelog();
+	CloseMyLog();
 
 	return iRet;
 }

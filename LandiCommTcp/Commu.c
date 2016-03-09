@@ -51,18 +51,18 @@ int initCommPara(int fdComm, int fdSocket)
 	//判断串口的状态是否为阻塞状态
 	if(fcntl(fdComm, F_SETFL, 0) < 0)
 	{
-		syslog(LOG_DEBUG, "fcntl failed!/n");
+		LOG("fcntl failed!");
 		return -1;
 	}
 	else
 	{
-		syslog(LOG_DEBUG, "fcntl=%d/n", fcntl(fdComm, F_SETFL,0));
+		LOG("fcntl=%d", fcntl(fdComm, F_SETFL,0));
 	}
 
 	//设置服务器侦听队列的长度
 	if(listen(s_CommPara.fdSocket, 5) <0)
 	{
-		syslog(LOG_DEBUG, "listen tcp server failed! /n");
+		LOG("listen tcp server failed!");
 		return -1;
 	}
 
@@ -95,7 +95,7 @@ int CommSend(char *pDataBuf, unsigned int iDataLen)
 	else
 	{
 		tcflush(s_CommPara.fdComm, TCOFLUSH);
-		syslog(LOG_DEBUG, "comm write failed!/n");
+		LOG("comm write failed");
 		return -1;
 	}
 }
@@ -123,7 +123,7 @@ int CommRecv(char *pDataBuf, unsigned int iDataLen)
 	iLen = read(s_CommPara.fdComm, szTmpBuf, iLen);
 	if(iLen <= 0)
 	{
-		syslog(LOG_DEBUG, "read failed! /n");
+		LOG("read failed!");
 	}
 
 	return iRet;
