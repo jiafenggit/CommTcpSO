@@ -6,6 +6,8 @@
  * 版权说明   : Copyright (c) 2008-2016   xx xx xx xx 技术有限公司
  * 其    他   : 
  * 修改日志   : 
+ 编译执行语句:
+ gcc LandiCommTcp.c Commu.c CommToTcpThread.c TcpToCommThread.c MyLog.c -lpthread -fPIC -shared -o libLandiCommTcp.so
 ***********************************************************************************/
 
 #include <stdio.h>
@@ -34,7 +36,7 @@
  * 修    改        : 
 
 *****************************************************************************/
-int StartCommTcpMap(int fdComm, int fdTcp)
+int StartCommTcpMap(int fdComm, int fdTcp, char *szSoPath)
 {
 	int iRet = 0;
 	pthread_t tCommToTcpID, tTcpToCommID;
@@ -43,7 +45,7 @@ int StartCommTcpMap(int fdComm, int fdTcp)
 	printf("StartCommTcpMap\n");
 
 	//打开日志文件
-	OpenMyLog();
+	OpenMyLog(szSoPath);
 
 	//初始化通讯参数
 	if((iRet = initCommPara(fdComm, fdTcp)) != 0)

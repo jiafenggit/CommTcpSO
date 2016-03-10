@@ -10,7 +10,7 @@
 #ifndef _LANDICOMMTCP_H_
 #define _LANDICOMMTCP_H_
 
-int StartCommTcpMap(int fdComm, int fdTcp);//串口和TCP映射入口
+int StartCommTcpMap(int fdComm, int fdTcp, char *szSoPath);//串口和TCP映射入口
 int EndCommTcpMap(void);//结束串口TCP互转
 
 #endif

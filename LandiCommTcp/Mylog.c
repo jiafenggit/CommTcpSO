@@ -14,6 +14,7 @@
 #include <syslog.h>
 #include <time.h>
 #include <stdarg.h>
+#include <dirent.h>
 
 #include "MyLog.h"
 
@@ -32,17 +33,30 @@ static FILE* file = NULL;
  * 修    改        :
 
 *****************************************************************************/
-void OpenMyLog()
+void OpenMyLog(char *szSoPath)
 {
+	char szSoLogPath[64] = {0};
+	DIR *dirptr = NULL;
 	unsigned char szTitle[32] = {0};
 	unsigned char szTime[16] = {0};
 	time_t t;
 	struct tm *nowtime;
 
+	//判断文件夹是否存在
+	sprintf(szSoLogPath, "%s/LandiSoLog/", szSoPath);
+	if((dirptr = opendir(szSoLogPath)) == NULL)
+	{
+		if(mkdir(szSoLogPath, 0777) < 0)
+		{
+			printf("mkdir failed! \n");
+			return ;
+		}
+	}
+
 	time(&t);
 	nowtime = localtime(&t);
 	strftime(szTime,sizeof(szTime),"%Y-%m-%d",nowtime);
-	sprintf(szTitle, "./log/LandiCommTcpLog%s.log", szTime);
+	sprintf(szTitle, "%sLandiCommTcpLog%s.log", szSoLogPath, szTime);
 	//打开日志文件
 	printf("%s\n", szTitle);
 	file = fopen(szTitle,"a+");

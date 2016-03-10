@@ -11,7 +11,7 @@
 #ifndef _MYLOG_H_
 #define  _MYLOG_H_
 
-void OpenMyLog();//打开日志文件
+void OpenMyLog(char *szSoPath);//打开日志文件
 void CloseMyLog();//关闭日志
 void LOG(const char* ms, ... );//记录日志
 
