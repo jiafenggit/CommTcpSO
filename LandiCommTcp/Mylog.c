@@ -35,33 +35,33 @@ static FILE* file = NULL;
 *****************************************************************************/
 void OpenMyLog(char *szSoPath)
 {
-	char szSoLogPath[64] = {0};
-	DIR *dirptr = NULL;
-	unsigned char szTitle[32] = {0};
-	unsigned char szTime[16] = {0};
-	time_t t;
-	struct tm *nowtime;
+    char szSoLogPath[64] = {0};
+    DIR *dirptr = NULL;
+    unsigned char szTitle[32] = {0};
+    unsigned char szTime[16] = {0};
+    time_t t;
+    struct tm *nowtime;
 
-	//判断文件夹是否存在
-	sprintf(szSoLogPath, "%s/LandiSoLog/", szSoPath);
-	if((dirptr = opendir(szSoLogPath)) == NULL)
-	{
-		if(mkdir(szSoLogPath, 0777) < 0)
-		{
-			printf("mkdir failed! \n");
-			return ;
-		}
-	}
+    //判断文件夹是否存在
+    sprintf(szSoLogPath, "%s/LandiSoLog/", szSoPath);
+    if((dirptr = opendir(szSoLogPath)) == NULL)
+    {
+        if(mkdir(szSoLogPath, 0777) < 0)
+        {
+        	printf("mkdir failed! \n");
+        	return ;
+        }
+    }
 
-	time(&t);
-	nowtime = localtime(&t);
-	strftime(szTime,sizeof(szTime),"%Y-%m-%d",nowtime);
-	sprintf(szTitle, "%sLandiCommTcpLog%s.log", szSoLogPath, szTime);
-	//打开日志文件
-	printf("%s\n", szTitle);
-	file = fopen(szTitle,"a+");
-	printf("fopen succeed!\n");
-	LOG("Start CommTcpMap so!");
+    time(&t);
+    nowtime = localtime(&t);
+    strftime(szTime,sizeof(szTime),"%Y-%m-%d",nowtime);
+    sprintf(szTitle, "%sLandiCommTcpLog%s.log", szSoLogPath, szTime);
+    //打开日志文件
+    printf("%s\n", szTitle);
+    file = fopen(szTitle,"a+");
+    printf("fopen succeed!\n");
+    LOG("Start CommTcpMap so!");
 }
 
 /*****************************************************************************
@@ -79,7 +79,7 @@ void OpenMyLog(char *szSoPath)
 *****************************************************************************/
 void CloseMyLog()
 {
-	fclose(file);
+    fclose(file);
 }
 
 /*****************************************************************************
@@ -97,27 +97,27 @@ void CloseMyLog()
 *****************************************************************************/
 void LOG(const char* ms, ... )
 {
-	unsigned char wzLog[1024] = {0};
-	unsigned char buffer[1024] = {0};
-	va_list args;
-	va_start(args, ms);
-	vsprintf( wzLog ,ms,args);
-	va_end(args);
+    unsigned char wzLog[1024] = {0};
+    unsigned char buffer[1024] = {0};
+    va_list args;
+    va_start(args, ms);
+    vsprintf( wzLog ,ms,args);
+    va_end(args);
 
-	time_t now;
-	time(&now);
-	struct tm *local;
-	local = localtime(&now);
-	printf("%04d-%02d-%02d %02d:%02d:%02d %s\n", local->tm_year+1900, local->tm_mon,
-	       local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec,
-	       wzLog);
-	sprintf(buffer,"%04d-%02d-%02d %02d:%02d:%02d %s\n", local->tm_year+1900, local->tm_mon,
-	        local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec,
-	        wzLog);
+    time_t now;
+    time(&now);
+    struct tm *local;
+    local = localtime(&now);
+    printf("%04d-%02d-%02d %02d:%02d:%02d %s\n", local->tm_year+1900, local->tm_mon,
+        local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec,
+        wzLog);
+    sprintf(buffer,"%04d-%02d-%02d %02d:%02d:%02d %s\n", local->tm_year+1900, local->tm_mon,
+        local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec,
+        wzLog);
 
-	fwrite(buffer,1, strlen(buffer), file);
+    fwrite(buffer,1, strlen(buffer), file);
 
-	return ;
+    return ;
 }
 
 

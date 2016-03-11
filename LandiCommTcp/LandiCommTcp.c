@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <unistd.h>
 
+#include "LandiCommTcp.h"
 #include "Commu.h"
 #include "CommToTcpThread.h"
 #include "TcpToCommThread.h"
@@ -36,52 +37,52 @@
  * 修    改        : 
 
 *****************************************************************************/
-int StartCommTcpMap(int fdComm, int fdTcp, char *szSoPath)
+int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, char *szSoPath)
 {
-	int iRet = 0;
-	pthread_t tCommToTcpID, tTcpToCommID;
-	void *tRet = NULL;
+    int iRet = 0;
+    pthread_t tCommToTcpID, tTcpToCommID;
+    void *tRet = NULL;
 
-	printf("StartCommTcpMap\n");
+    printf("StartCommTcpMap\n");
 
-	//打开日志文件
-	OpenMyLog(szSoPath);
+    //打开日志文件
+    OpenMyLog(szSoPath);
 
-	//初始化通讯参数
-	if((iRet = initCommPara(fdComm, fdTcp)) != 0)
-	{
-		LOG("initCommPara failed!");
-		return iRet;
-	}
+    //初始化通讯参数
+    if((iRet = initCommPara(fdPOS, iPosCommuType, fdServer)) != 0)
+    {
+        LOG("initCommPara failed!");
+        return iRet;
+    }
 
-	//创建线程
-	iRet = pthread_create(&tCommToTcpID, NULL, CommToTcpThread, NULL);
-	if(iRet != 0)
-	{
-		LOG("pthread_create failed!");
-		return iRet;
-	}
-	
-	iRet = pthread_create(&tTcpToCommID, NULL, TcpToCommThread, NULL);
-	if(iRet != 0)
-	{
-		LOG("pthread_create failed!");
-		return iRet;
-	}
+    //创建线程
+    iRet = pthread_create(&tCommToTcpID, NULL, CommToTcpThread, NULL);
+    if(iRet != 0)
+    {
+        LOG("pthread_create failed!");
+        return iRet;
+    }
 
-	//等待线程执行完成
-	while(1)
-	{
-		if((iRet = pthread_join(tCommToTcpID, &tRet)) == 0 && (iRet = pthread_join(tTcpToCommID, &tRet)) == 0)
-		{
-			break;
-		}
-		else
-		{
-		}
-	}
+    iRet = pthread_create(&tTcpToCommID, NULL, TcpToCommThread, NULL);
+    if(iRet != 0)
+    {
+        LOG("pthread_create failed!");
+        return iRet;
+    }
 
-	return iRet;
+    //等待线程执行完成
+    while(1)
+    {
+        if((iRet = pthread_join(tCommToTcpID, &tRet)) == 0 && (iRet = pthread_join(tTcpToCommID, &tRet)) == 0)
+        {
+            break;
+        }
+        else
+        {
+        }
+    }
+
+    return iRet;
 }
 
 /*****************************************************************************
@@ -99,16 +100,16 @@ int StartCommTcpMap(int fdComm, int fdTcp, char *szSoPath)
 *****************************************************************************/
 int EndCommTcpMap(void)
 {
-	int iRet = 0;
+    int iRet = 0;
 
-	iRet = CloseComm();
-	if(iRet <= 0)
-	{
-		LOG("CloseComm failed!");
-	}
+    iRet = CloseComm();
+    if(iRet <= 0)
+    {
+        LOG("CloseComm failed!");
+    }
 
-	CloseMyLog();
+    CloseMyLog();
 
-	return iRet;
+    return iRet;
 }
 

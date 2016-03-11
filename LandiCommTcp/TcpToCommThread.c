@@ -8,6 +8,7 @@
  * –ﬁ∏ƒ»’÷æ   :
 ***********************************************************************************/
 
+#include "TcpToCommThread.h"
 #include "Commu.h"
 #include "MyLog.h"
 
@@ -26,30 +27,30 @@
 *****************************************************************************/
 void* TcpToCommThread(void* arg)
 {
-	char szDataBuf[DATE_BUF_LEN] = {0};
-	unsigned int iDataLen = 0;
-	int iRet = 0;
+    char szDataBuf[DATE_BUF_LEN] = {0};
+    unsigned int iDataLen = 0;
+    int iRet = 0;
 
-	while(1)
-	{
-		iRet = TcpRecv(szDataBuf, iDataLen);
-		if(iRet <= 0)
-		{
-			continue;
-		}
-		else
-		{
-			iDataLen = iRet;
-			iRet = 0;
-		}
+    while(1)
+    {
+        iRet = TcpRecv(szDataBuf, iDataLen);
+        if(iRet <= 0)
+        {
+            continue;
+        }
+        else
+        {
+            iDataLen = iRet;
+            iRet = 0;
+        }
 
-		iRet = CommSend(szDataBuf, iDataLen);
-		if(iRet <= 0)
-		{
-			//TODO:log
-			LOG("CommSend failed!");
-		}
-	}
+        iRet = CommSend(szDataBuf, iDataLen);
+        if(iRet <= 0)
+        {
+            //TODO:log
+            LOG("CommSend failed!");
+        }
+    }
 }
 
 

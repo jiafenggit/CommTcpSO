@@ -45,28 +45,28 @@ static CommPara s_CommPara;
 *****************************************************************************/
 int initCommPara(int fdComm, int fdSocket)
 {
-	s_CommPara.fdComm = fdComm;
-	s_CommPara.fdSocket = fdSocket;
+    s_CommPara.fdComm = fdComm;
+    s_CommPara.fdSocket = fdSocket;
 
-	//判断串口的状态是否为阻塞状态
-	if(fcntl(fdComm, F_SETFL, 0) < 0)
-	{
-		LOG("fcntl failed!");
-		return -1;
-	}
-	else
-	{
-		LOG("fcntl=%d", fcntl(fdComm, F_SETFL,0));
-	}
+    //判断串口的状态是否为阻塞状态
+    if(fcntl(fdComm, F_SETFL, 0) < 0)
+    {
+        LOG("fcntl failed!");
+        return -1;
+    }
+    else
+    {
+        LOG("fcntl=%d", fcntl(fdComm, F_SETFL,0));
+    }
 
-	//设置服务器侦听队列的长度
-	if(listen(s_CommPara.fdSocket, 5) <0)
-	{
-		LOG("listen tcp server failed!");
-		return -1;
-	}
+    //设置服务器侦听队列的长度
+    if(listen(s_CommPara.fdSocket, 5) <0)
+    {
+        LOG("listen tcp server failed!");
+        return -1;
+    }
 
-	return 0;
+    return 0;
 }
 
 /*****************************************************************************
@@ -85,19 +85,19 @@ int initCommPara(int fdComm, int fdSocket)
 *****************************************************************************/
 int CommSend(char *pDataBuf, unsigned int iDataLen)
 {
-	int len = 0;
+    int len = 0;
 
-	len = write(s_CommPara.fdComm, pDataBuf, iDataLen);
-	if (len == iDataLen)
-	{
-		return len;
-	}
-	else
-	{
-		tcflush(s_CommPara.fdComm, TCOFLUSH);
-		LOG("comm write failed");
-		return -1;
-	}
+    len = write(s_CommPara.fdComm, pDataBuf, iDataLen);
+    if (len == iDataLen)
+    {
+        return len;
+    }
+    else
+    {
+        tcflush(s_CommPara.fdComm, TCOFLUSH);
+        LOG("comm write failed");
+        return -1;
+    }
 }
 
 /*****************************************************************************
@@ -116,17 +116,17 @@ int CommSend(char *pDataBuf, unsigned int iDataLen)
 *****************************************************************************/
 int CommRecv(char *pDataBuf, unsigned int iDataLen)
 {
-	int iRet = 0;
-	int iLen = 0;
-	char szTmpBuf[8] = {0};
+    int iRet = 0;
+    int iLen = 0;
+    char szTmpBuf[8] = {0};
 
-	iLen = read(s_CommPara.fdComm, szTmpBuf, iLen);
-	if(iLen <= 0)
-	{
-		LOG("read failed!");
-	}
+    iLen = read(s_CommPara.fdComm, szTmpBuf, iLen);
+    if(iLen <= 0)
+    {
+        LOG("read failed!");
+    }
 
-	return iRet;
+    return iRet;
 }
 
 /*****************************************************************************
@@ -145,11 +145,11 @@ int CommRecv(char *pDataBuf, unsigned int iDataLen)
 *****************************************************************************/
 int TcpSend(char *pDataBuf, unsigned int iDataLen)
 {
-	int iLen = 0;
+    int iLen = 0;
 
-	iLen = send(s_CommPara.fdSocket, pDataBuf, iDataLen, 0);
+    iLen = send(s_CommPara.fdSocket, pDataBuf, iDataLen, 0);
 
-	return iLen;
+    return iLen;
 }
 
 /*****************************************************************************
@@ -168,11 +168,11 @@ int TcpSend(char *pDataBuf, unsigned int iDataLen)
 *****************************************************************************/
 int TcpRecv(char *pDataBuf, unsigned int iDataLen)
 {
-	int iLen = 0;
+    int iLen = 0;
 
-	iLen = recv(s_CommPara.fdSocket, pDataBuf, iDataLen, 0);
+    iLen = recv(s_CommPara.fdSocket, pDataBuf, iDataLen, 0);
 
-	return iLen;
+    return iLen;
 }
 
 /*****************************************************************************
@@ -190,11 +190,11 @@ int TcpRecv(char *pDataBuf, unsigned int iDataLen)
 *****************************************************************************/
 int CloseComm(void)
 {
-	int iRet = 0;
+    int iRet = 0;
 
-	iRet = close(s_CommPara.fdSocket);
+    iRet = close(s_CommPara.fdSocket);
 
-	return iRet;
+    return iRet;
 }
 
 
