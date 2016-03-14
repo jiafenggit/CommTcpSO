@@ -1,6 +1,6 @@
 /*
 ±‡“Î÷¥––”Ôæ‰
-gcc main.c -lpthread -o main ../libLandiCommTcp.so 
+gcc MisSys.c CommOp.c GetConfig.c -lpthread -o main ../libLandiCommTcp.so
 */
 
 #include <stdio.h>
@@ -13,10 +13,14 @@ gcc main.c -lpthread -o main ../libLandiCommTcp.so
 
 int main()
 {
-    int fdComm = 0, fdTcp = 0;
-    printf("running!\n");
-    StartCommTcpMap(fdComm, fdTcp, "../");
+	int fdPos = 0, fdServer = 0;
+	int iPosCommuType = 0;
+	printf("running...\n");
 
-    return 0;
+	StartCommOp(&fdPos, &iPosCommuType, &fdServer);
+	
+	StartCommTcpMap(fdPos, iPosCommuType, fdServer, "../");
+
+	return 0;
 }
 

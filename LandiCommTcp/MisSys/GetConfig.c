@@ -7,6 +7,11 @@
  * 其    他   : 
  * 修改日志   : 
 ***********************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "GetConfig.h"
 
 #define CONFIG_PATH "./config/config.ini"
@@ -166,7 +171,7 @@ void GetConfigFileStringValue(UINT8 *pszSectionName, UINT8 *pszKeyName, UINT8 *p
     fp = fopen(CONFIG_PATH, "r");
     if (fp == NULL)
     {
-        printf("GetConfigFileStringValue: open %s failed!\n", szWholePath);
+        printf("GetConfigFileStringValue: open %s failed!\n", CONFIG_PATH);
         return;
     }
 

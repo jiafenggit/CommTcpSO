@@ -7,12 +7,9 @@
  * 其    他   : 
  * 修改日志   : 
 ***********************************************************************************/
-#ifndef _GETCONFIG_H_
-#define _GETCONFIG_H_
+#ifndef _GET_CONFIG_H_
+#define _GET_CONFIG_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "TypeDef.h"
 

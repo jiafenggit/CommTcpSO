@@ -2,6 +2,6 @@
 ;通讯类型 1-TCP 2-Comm
 PosCommuType = 1
 
-[SO_PATH]
+[PATH]
 ;动态库so文件路径
 SoPath = "../"

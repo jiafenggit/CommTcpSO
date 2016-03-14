@@ -1,5 +1,5 @@
 /***********************************************************************************
- * 文 件 名   : TcpToCommThread.c
+ * 文 件 名   : ListenServerThread.c
  * 负 责 人   : harry
  * 创建日期   : 2016年3月3日
  * 文件描述   : TCP转串口线程
@@ -8,12 +8,12 @@
  * 修改日志   :
 ***********************************************************************************/
 
-#include "TcpToCommThread.h"
+#include "ListenServerThread.h"
 #include "Commu.h"
 #include "MyLog.h"
 
 /*****************************************************************************
- * 函 数 名     : TcpToCommThread
+ * 函 数 名     : ListenServerThread
  * 负 责 人     : harry
  * 创建日期  : 2016年3月3日
  * 函数功能  : TCP转串口线程
@@ -25,32 +25,32 @@
  * 修    改        :
 
 *****************************************************************************/
-void* TcpToCommThread(void* arg)
+void* ListenServerThread(void* arg)
 {
-    char szDataBuf[DATE_BUF_LEN] = {0};
-    unsigned int iDataLen = 0;
-    int iRet = 0;
+	char szDataBuf[DATE_BUF_LEN] = {0};
+	unsigned int iDataLen = 0;
+	int iRet = 0;
 
-    while(1)
-    {
-        iRet = TcpRecv(szDataBuf, iDataLen);
-        if(iRet <= 0)
-        {
-            continue;
-        }
-        else
-        {
-            iDataLen = iRet;
-            iRet = 0;
-        }
+	while(1)
+	{
+		iRet = RecvFormSever(szDataBuf, iDataLen);
+		if(iRet <= 0)
+		{
+			continue;
+		}
+		else
+		{
+			iDataLen = iRet;
+			iRet = 0;
+		}
 
-        iRet = CommSend(szDataBuf, iDataLen);
-        if(iRet <= 0)
-        {
-            //TODO:log
-            LOG("CommSend failed!");
-        }
-    }
+		iRet = SendToPos(szDataBuf, iDataLen);
+		if(iRet <= 0)
+		{
+			//TODO:log
+			LOG("CommSend failed!");
+		}
+	}
 }
 
 
