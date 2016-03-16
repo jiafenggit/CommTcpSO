@@ -15,6 +15,7 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "LandiCommTcp.h"
 #include "Commu.h"
@@ -37,7 +38,7 @@
  * 修    改        :
 
 *****************************************************************************/
-int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, char *szSoPath)
+int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, unsigned int iTimeOut, char *szSoPath)
 {
 	int iRet = 0;
 	pthread_t tCommToTcpID, tTcpToCommID;
@@ -49,7 +50,13 @@ int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, char *szSoPath)
 	OpenMyLog(szSoPath);
 
 	//初始化通讯参数
-	if((iRet = initCommPara(fdPOS, iPosCommuType, fdServer)) != 0)
+	CommPara mCommPara;
+	memset(&mCommPara, 0x00, sizeof(CommPara));
+	mCommPara.fdPos = fdPOS;
+	mCommPara.iPosCommuType = iPosCommuType;
+	mCommPara.fdServer = fdServer;
+	mCommPara.iTimeOut = iTimeOut;
+	if((iRet = initCommPara(mCommPara)) != 0)
 	{
 		LOG("initCommPara failed!");
 		return iRet;
@@ -73,7 +80,7 @@ int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, char *szSoPath)
 	//等待线程执行完成
 	while(1)
 	{
-		if((iRet = pthread_join(tCommToTcpID, &tRet)) == 0 && (iRet = pthread_join(tTcpToCommID, &tRet)) == 0)
+		if((iRet = pthread_join(tCommToTcpID, &tRet)) == 0 || (iRet = pthread_join(tTcpToCommID, &tRet)) == 0)
 		{
 			break;
 		}
@@ -81,6 +88,14 @@ int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, char *szSoPath)
 		{
 		}
 	}
+
+	iRet = CloseComm();
+	if(iRet <= 0)
+	{
+		LOG("CloseComm failed!");
+	}
+
+	CloseMyLog();
 
 	return iRet;
 }

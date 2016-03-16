@@ -1,6 +1,6 @@
 /*
 ±‡“Î÷¥––”Ôæ‰
-gcc MisSys.c CommOp.c GetConfig.c -lpthread -o main ../libLandiCommTcp.so
+gcc MisSys.c CommOp.c GetConfig.c -lpthread -o MisSys ../libLandiCommTcp.so
 */
 
 #include <stdio.h>
@@ -11,6 +11,8 @@ gcc MisSys.c CommOp.c GetConfig.c -lpthread -o main ../libLandiCommTcp.so
 
 #include "../LandiCommTcp.h"
 
+#define RECV_TIME_OUT 30 //30√Î
+
 int main()
 {
 	int fdPos = 0, fdServer = 0;
@@ -19,7 +21,9 @@ int main()
 
 	StartCommOp(&fdPos, &iPosCommuType, &fdServer);
 	
-	StartCommTcpMap(fdPos, iPosCommuType, fdServer, "../");
+	StartCommTcpMap(fdPos, iPosCommuType, fdServer, RECV_TIME_OUT, "../");
+
+	CloseCommu();
 
 	return 0;
 }

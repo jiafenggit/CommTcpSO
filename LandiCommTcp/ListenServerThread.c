@@ -7,6 +7,10 @@
  * 其    他   :
  * 修改日志   :
 ***********************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 #include "ListenServerThread.h"
 #include "Commu.h"
@@ -31,17 +35,29 @@ void* ListenServerThread(void* arg)
 	unsigned int iDataLen = 0;
 	int iRet = 0;
 
+	LOG("Start ListenServerThread!");
+
 	while(1)
 	{
 		iRet = RecvFormSever(szDataBuf, iDataLen);
-		if(iRet <= 0)
+		if(iRet >= 0)
 		{
-			continue;
+			iDataLen = iRet;
+		}
+		else if(COMM_RET_ERROR == iRet)
+		{
+			LOG("RecvFormPos error, end ListenPosThread!");
+			break;
+		}
+		else if(COMM_RET_TIMEOUT == iRet)
+		{
+			LOG("RecvFormPos timeout, end ListenPosThread!");
+			break;
 		}
 		else
 		{
-			iDataLen = iRet;
-			iRet = 0;
+			LOG("RecvFormPos return don't know result, end ListenPosThread!");
+			break;
 		}
 
 		iRet = SendToPos(szDataBuf, iDataLen);

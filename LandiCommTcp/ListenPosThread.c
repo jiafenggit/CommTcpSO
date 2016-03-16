@@ -32,17 +32,29 @@ void* ListenPosThread(void* arg)
 	unsigned int iDataLen = 0;
 	int iRet = 0;
 
+	LOG("start ListenPosThread!");
+
 	while(1)
 	{
 		iRet = RecvFormPos(szDataBuf, iDataLen);
-		if(iRet <= 0)
+		if(iRet >= 0)
 		{
-			continue;
+			iDataLen = iRet;
+		}
+		else if(COMM_RET_ERROR == iRet)
+		{
+			LOG("RecvFormPos error, end ListenPosThread!");
+			break;
+		}
+		else if(COMM_RET_TIMEOUT == iRet)
+		{
+			LOG("RecvFormPos timeout, end ListenPosThread!");
+			break;
 		}
 		else
 		{
-			iDataLen = iRet;
-			iRet = 0;
+			LOG("RecvFormPos return don't know result, end ListenPosThread!");
+			break;
 		}
 
 		iRet = SendToServer(szDataBuf, iDataLen);

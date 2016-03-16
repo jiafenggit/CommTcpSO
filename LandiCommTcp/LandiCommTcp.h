@@ -14,7 +14,7 @@
 #define POS_COMMU_TYPE_COMM 1
 #define POS_COMMU_TYPE_TCP 2
 
-int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, char *szSoPath);//串口和TCP映射入口
+int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, unsigned int iTimeOut, char *szSoPath);//串口和TCP映射入口
 int EndCommTcpMap(void);//结束串口TCP互转
 
 #endif

@@ -105,7 +105,7 @@ int SocketClient(void)
 	memset(&remote_addr, 0, sizeof(remote_addr)); //数据初始化--清零
 	remote_addr.sin_family = AF_INET; //设置为IP通信
 	remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");//服务器IP地址
-	remote_addr.sin_port = htons(8099); //服务器端口号
+	remote_addr.sin_port = htons(8099); //TMS服务器端口号
 
 	/*创建客户端套接字--IPv4协议，面向连接通信，TCP协议*/
 	if((s_fdServer = socket(PF_INET, SOCK_STREAM, 0))<0)
@@ -185,5 +185,25 @@ int SocketServer(void)
 //	len = recv(client_sockfd, buf, BUFSIZ, 0);
 
 	return 0;
+}
+
+/*****************************************************************************
+ * 函 数 名     : CloseCommu
+ * 负 责 人     : harry
+ * 创建日期  : 2016年3月15日
+ * 函数功能  : 关闭socket句柄
+ * 输入参数  : 无
+ * 输出参数  : 无
+ * 返 回 值     : 
+ * 调用关系  : 
+ * 其    它        : 
+ * 修    改        : 
+
+*****************************************************************************/
+void CloseCommu(void)
+{
+	close(s_fdPos1);
+	close(s_fdPos2);
+	close(s_fdServer);
 }
 

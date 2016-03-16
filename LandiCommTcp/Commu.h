@@ -17,11 +17,21 @@ typedef struct
 	int fdPos;        //POS通讯句柄
 	int iPosCommuType;//POS通讯类型
 	int fdServer;        //服务通讯句柄
+	unsigned int iTimeOut; //通讯等待超时
 }CommPara;
 
+//通讯操作返回结果
+#define COMM_RET_SUCCESS	0
+#define COMM_RET_ERROR		-1
+#define COMM_RET_TIMEOUT	-2
+
+#define DATE_BUF_LEN_SIZE 2 //长度域的长度
 #define DATE_BUF_LEN 36*1024
 
-int initCommPara(int fdPOS, int iPosCommuType, int fdServer);//初始化通讯参数
+#define START_STR "start"
+#define END_STR "end"
+
+int initCommPara(CommPara mCommPara);//初始化通讯参数
 int SendToPos(char *pDataBuf, unsigned int iDataLen);//串口发送数据
 int RecvFormPos(char *pDataBuf, unsigned int iDataLen);//串口接收数据
 int SendToServer(char *pDataBuf, unsigned int iDataLen);//TCP发送数据

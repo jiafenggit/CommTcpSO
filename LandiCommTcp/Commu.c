@@ -26,6 +26,7 @@
 #include "Commu.h"
 #include "LandiCommTcp.h"
 #include "MyLog.h"
+#include "DataOp.h"
 
 //通讯参数全局变量
 static CommPara s_CommPara;
@@ -44,11 +45,9 @@ static CommPara s_CommPara;
  * 修    改        :
 
 *****************************************************************************/
-int initCommPara(int fdPOS, int iPosCommuType, int fdServer)
+int initCommPara(CommPara mCommPara)
 {
-	s_CommPara.fdPos= fdPOS;
-	s_CommPara.iPosCommuType = iPosCommuType;
-	s_CommPara.fdServer= fdServer;
+	memcpy(&s_CommPara, &mCommPara, sizeof(CommPara));
 
 	if(POS_COMMU_TYPE_COMM== s_CommPara.iPosCommuType)
 	{
@@ -62,26 +61,6 @@ int initCommPara(int fdPOS, int iPosCommuType, int fdServer)
 		{
 			LOG("fcntl=%d", fcntl(s_CommPara.fdPos, F_SETFL,0));
 		}
-	}
-	else if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
-	{
-		//设置服务器侦听队列的长度
-		if(listen(s_CommPara.fdPos, 5) <0)
-		{
-			LOG("listen Pos failed!");
-			return -2;
-		}
-	}
-	else
-	{
-		return -3;
-	}
-
-	//设置服务器侦听队列的长度
-	if(listen(s_CommPara.fdServer, 5) <0)
-	{
-		LOG("listen server failed!");
-		return -4;
 	}
 
 	return 0;
@@ -109,6 +88,8 @@ int SendToPos(char *pDataBuf, unsigned int iDataLen)
 	{
 		return -1;
 	}
+
+	LOG("start SendToPos!");
 
 	if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
 	{
@@ -156,29 +137,73 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 	int iRet = 0;
 	int iLen = 0;
 	char szTmpBuf[8] = {0};
+	unsigned int iTime = 0;
 
 	if(NULL == pDataBuf)
 	{
-		return -1;
+		return COMM_RET_ERROR;
 	}
 
-	if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
-	{
-		iLen = read(s_CommPara.fdPos, szTmpBuf, iLen);
-	}
-	else if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
-	{
-		iLen = recv(s_CommPara.fdPos, pDataBuf, iDataLen, 0);
-	}
-	else
-	{
-		return -2;
-	}
+	LOG("start RecvFormPos!");
 
-	if(iLen <= 0)
+	iTime = s_CommPara.iTimeOut;
+	while(iTime > 0)
 	{
-		LOG("read failed!");
-		iRet = -3;
+		if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
+		{
+			iLen = read(s_CommPara.fdPos, szTmpBuf, DATE_BUF_LEN_SIZE);
+		}
+		else if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
+		{
+			iLen = recv(s_CommPara.fdPos, pDataBuf, DATE_BUF_LEN_SIZE, 0);
+		}
+		else
+		{
+			LOG("iPosCommuType is error!");
+			return COMM_RET_ERROR;
+		}
+
+		if(DATE_BUF_LEN_SIZE == iLen)
+		{
+			iLen = MWORD(pDataBuf[0], pDataBuf[1]);
+			if(iLen > (iDataLen - DATE_BUF_LEN_SIZE))
+			{
+				iRet = COMM_RET_ERROR;
+				LOG("data len over buf size!");
+				break;
+			}
+
+			if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
+			{
+				iLen = read(s_CommPara.fdPos, szTmpBuf, iLen);
+			}
+			else if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
+			{
+				iLen = recv(s_CommPara.fdPos, pDataBuf, iLen, 0);
+			}
+
+			if(iLen <= 0)
+			{
+				iTime--;
+				sleep(1);
+
+				iRet = COMM_RET_TIMEOUT;
+				continue;
+			}
+			else
+			{
+				iRet = iLen + DATE_BUF_LEN_SIZE;
+				break;
+			}
+		}
+		else
+		{
+			iTime--;
+			sleep(1);
+
+			iRet = COMM_RET_TIMEOUT;
+			continue;
+		}
 	}
 
 	return iRet;
@@ -207,6 +232,8 @@ int SendToServer(char *pDataBuf, unsigned int iDataLen)
 		return -1;
 	}
 
+	LOG("start SendToServer!");
+
 	iLen = send(s_CommPara.fdServer, pDataBuf, iDataLen, 0);
 
 	return iLen;
@@ -228,14 +255,55 @@ int SendToServer(char *pDataBuf, unsigned int iDataLen)
 *****************************************************************************/
 int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 {
+	int iRet = 0;
 	int iLen = 0;
+	unsigned int iTime = 0;
 
 	if(NULL == pDataBuf)
 	{
-		return -1;
+		return COMM_RET_ERROR;
 	}
 
-	iLen = recv(s_CommPara.fdServer, pDataBuf, iDataLen, 0);
+	LOG("start RecvFormServer!");
+
+	iTime = s_CommPara.iTimeOut;
+	while(iTime > 0)
+	{
+		iLen = recv(s_CommPara.fdServer, pDataBuf, DATE_BUF_LEN_SIZE, 0);
+		if(DATE_BUF_LEN_SIZE == iLen)
+		{
+			iLen = MWORD(pDataBuf[0], pDataBuf[1]);
+			if(iLen > (iDataLen - DATE_BUF_LEN_SIZE))
+			{
+				iRet = COMM_RET_ERROR;
+				LOG("data len over buf size!");
+				break;
+			}
+
+			iLen = recv(s_CommPara.fdServer, pDataBuf + DATE_BUF_LEN_SIZE, iLen, 0);
+			if(iLen <= 0)
+			{
+				iTime--;
+				sleep(1);
+
+				iRet = COMM_RET_TIMEOUT;
+				continue;
+			}
+			else
+			{
+				iRet = iLen + DATE_BUF_LEN_SIZE;
+				break;
+			}
+		}
+		else
+		{
+			iTime--;
+			sleep(1);
+
+			iRet = COMM_RET_TIMEOUT;
+			continue;
+		}
+	}
 
 	return iLen;
 }
@@ -256,6 +324,8 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 int CloseComm(void)
 {
 	int iRet = 0;
+
+	LOG("CloseComm");
 
 	if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
 	{
