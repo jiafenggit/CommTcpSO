@@ -106,12 +106,13 @@ int SendToPos(char *pDataBuf, unsigned int iDataLen)
 
 	if (iLen == iDataLen)
 	{
+		LOG("SendToPos succeed!");
 		return iLen;
 	}
 	else
 	{
 		tcflush(s_CommPara.fdPos, TCOFLUSH);
-		LOG("comm write failed");
+		LOG("SendToPos failed");
 		return -3;
 	}
 
@@ -135,7 +136,7 @@ int SendToPos(char *pDataBuf, unsigned int iDataLen)
 int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 {
 	int iRet = 0;
-	int iLen = 0;
+	unsigned int iLen = 0;
 	char szTmpBuf[8] = {0};
 	unsigned int iTime = 0;
 
@@ -165,21 +166,21 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 
 		if(DATE_BUF_LEN_SIZE == iLen)
 		{
-			iLen = MWORD(pDataBuf[0], pDataBuf[1]);
+			iLen = WORD(pDataBuf[0], pDataBuf[1]);
 			if(iLen > (iDataLen - DATE_BUF_LEN_SIZE))
 			{
 				iRet = COMM_RET_ERROR;
-				LOG("data len over buf size!");
+				LOG("RecvFormPos data len over buf size!");
 				break;
 			}
 
 			if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
 			{
-				iLen = read(s_CommPara.fdPos, szTmpBuf, iLen);
+				iLen = read(s_CommPara.fdPos, szTmpBuf + DATE_BUF_LEN_SIZE, iLen);
 			}
 			else if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
 			{
-				iLen = recv(s_CommPara.fdPos, pDataBuf, iLen, 0);
+				iLen = recv(s_CommPara.fdPos, pDataBuf + DATE_BUF_LEN_SIZE, iLen, 0);
 			}
 
 			if(iLen <= 0)
@@ -236,7 +237,16 @@ int SendToServer(char *pDataBuf, unsigned int iDataLen)
 
 	iLen = send(s_CommPara.fdServer, pDataBuf, iDataLen, 0);
 
-	return iLen;
+	if (iLen == iDataLen)
+	{
+		LOG("SendToServer succeed!");
+		return iLen;
+	}
+	else
+	{
+		LOG("SendToServer failed!");
+		return -2;
+	}
 }
 
 /*****************************************************************************
@@ -256,7 +266,7 @@ int SendToServer(char *pDataBuf, unsigned int iDataLen)
 int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 {
 	int iRet = 0;
-	int iLen = 0;
+	unsigned int iLen = 0;
 	unsigned int iTime = 0;
 
 	if(NULL == pDataBuf)
@@ -272,11 +282,11 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 		iLen = recv(s_CommPara.fdServer, pDataBuf, DATE_BUF_LEN_SIZE, 0);
 		if(DATE_BUF_LEN_SIZE == iLen)
 		{
-			iLen = MWORD(pDataBuf[0], pDataBuf[1]);
+			iLen = WORD(pDataBuf[0], pDataBuf[1]);
 			if(iLen > (iDataLen - DATE_BUF_LEN_SIZE))
 			{
 				iRet = COMM_RET_ERROR;
-				LOG("data len over buf size!");
+				LOG("RecvFormSever data len over buf size!");
 				break;
 			}
 

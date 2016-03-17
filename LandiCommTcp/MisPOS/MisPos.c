@@ -25,11 +25,11 @@
 #include <arpa/inet.h>
 #include <signal.h>
 
-#define WORD(h, l) ((h)*0x10 + l)
+#define WORD(h, l) ((h)*0x100 + l)
 
 
 #define DATE_BUF_LEN_SIZE 2 //长度域的长度
-#define SOCKET_DATA_SIZE 2048
+#define SOCKET_DATA_SIZE (4*1024)
 
 #define RECV_TIME_OUT 30 //30秒
 
@@ -83,17 +83,21 @@ int main()
 	len = SendData(fdMis, START_STR, strlen(START_STR));
 
 	//接收握手应答
+	memset(buf,0x00, SOCKET_DATA_SIZE);
 	iRet = RecvData(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
-	if(iRet != COMM_RET_SUCCESS)
+	if(iRet < COMM_RET_SUCCESS)
 	{
-		return -3;
+		printf("2.RecvData failed!\n");
+		return -7;
 	}
 
 	//接收数据
+	memset(buf,0x00, SOCKET_DATA_SIZE);
 	iRet = RecvData(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
-	if(iRet != COMM_RET_SUCCESS)
+	if(iRet < COMM_RET_SUCCESS)
 	{
-		return -4;
+		printf("2.RecvData failed!\n");
+		return -7;
 	}
 
 	//发送结束报文
@@ -113,18 +117,19 @@ int SendData(int iFD, char *pDataBuf, unsigned int iDataLen)
 	char SendBuf[SOCKET_DATA_SIZE] = {0};
 	unsigned int iLen = 0;
 
-	if(NULL == pDataBuf || 0 == iDataLen || iDataLen >= 0x100)
+	if(NULL == pDataBuf || 0 == iDataLen || iDataLen >= SOCKET_DATA_SIZE)
 	{
 		return -1;
 	}
 
-	SendBuf[DATE_BUF_LEN_SIZE -2] = iDataLen / 0x10;//高位
-	SendBuf[DATE_BUF_LEN_SIZE -1] = iDataLen % 0x10;//低位
+	SendBuf[DATE_BUF_LEN_SIZE -2] = iDataLen / 0x100;//高位
+	SendBuf[DATE_BUF_LEN_SIZE -1] = iDataLen % 0x100;//低位
 	iLen += DATE_BUF_LEN_SIZE;
 
 	memcpy(SendBuf + DATE_BUF_LEN_SIZE, pDataBuf, iDataLen);
 	iLen += iDataLen;
 
+	printf("Pos send data len = %d\n", iLen);
 	iLen = send(iFD, SendBuf, iLen, 0);
 
 	return iLen;
@@ -161,8 +166,8 @@ int RecvData(int iFD, char *pDataBuf, unsigned int iBufSize, unsigned int iTimeO
 		}
 		else
 		{
-			printf("%s\n", pDataBuf + DATE_BUF_LEN_SIZE);
 			iRet = iLen + DATE_BUF_LEN_SIZE;
+			printf("Pos recv len = %d\n", iRet);
 			break;
 		}
 	}

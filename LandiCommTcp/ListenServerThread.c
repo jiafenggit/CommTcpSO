@@ -39,34 +39,38 @@ void* ListenServerThread(void* arg)
 
 	while(1)
 	{
+		iDataLen = DATE_BUF_LEN;
+		memset(szDataBuf, 0x00, iDataLen);
 		iRet = RecvFormSever(szDataBuf, iDataLen);
 		if(iRet >= 0)
 		{
 			iDataLen = iRet;
+			LOG("RecvFormSever succeed!len = %d", iDataLen);
 		}
 		else if(COMM_RET_ERROR == iRet)
 		{
-			LOG("RecvFormPos error, end ListenPosThread!");
+			LOG("RecvFormSever error, end ListenPosThread!");
 			break;
 		}
 		else if(COMM_RET_TIMEOUT == iRet)
 		{
-			LOG("RecvFormPos timeout, end ListenPosThread!");
+			LOG("RecvFormSever timeout, end ListenPosThread!");
 			break;
 		}
 		else
 		{
-			LOG("RecvFormPos return don't know result, end ListenPosThread!");
+			LOG("RecvFormSever return don't know result, end ListenPosThread!");
 			break;
 		}
 
 		iRet = SendToPos(szDataBuf, iDataLen);
 		if(iRet <= 0)
 		{
-			//TODO:log
-			LOG("CommSend failed!");
+			break;
 		}
 	}
+
+	LOG("End ListenServerThread!");
 }
 
 

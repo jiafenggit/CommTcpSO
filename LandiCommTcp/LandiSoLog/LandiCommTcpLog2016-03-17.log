@@ -1,0 +1,148 @@
+2016-02-17 10:37:22 Start CommTcpMap so!
+2016-02-17 10:37:22 start ListenPosThread!
+2016-02-17 10:37:22 start RecvFormPos!
+2016-02-17 10:37:22 iPosCommuType is error!
+2016-02-17 10:37:22 RecvFormPos error, end ListenPosThread!
+2016-02-17 10:37:22 Start ListenServerThread!
+2016-02-17 10:37:22 start RecvFormServer!
+2016-02-17 10:37:22 CloseComm
+2016-02-17 10:37:22 CloseComm failed!
+2016-02-17 14:20:28 Start CommTcpMap so!
+2016-02-17 14:20:28 start ListenPosThread!
+2016-02-17 14:20:28 start RecvFormPos!
+2016-02-17 14:20:28 Start ListenServerThread!
+2016-02-17 14:20:28 start RecvFormServer!
+2016-02-17 14:20:30 RecvFormPos succeed!
+2016-02-17 14:20:30 start SendToServer!
+2016-02-17 14:20:30 SendToServer succeed!
+2016-02-17 14:20:30 start RecvFormPos!
+2016-02-17 14:20:30 RecvFormSever succeed!
+2016-02-17 14:20:30 start SendToPos!
+2016-02-17 14:20:30 SendToPos succeed!
+2016-02-17 14:20:30 start RecvFormServer!
+2016-02-17 14:20:33 RecvFormSever succeed!
+2016-02-17 14:20:33 start SendToPos!
+2016-02-17 14:20:33 SendToPos succeed!
+2016-02-17 14:20:33 start RecvFormServer!
+2016-02-17 14:21:00 RecvFormPos timeout, end ListenPosThread!
+2016-02-17 14:21:00 CloseComm
+2016-02-17 14:21:00 CloseComm failed!
+2016-02-17 14:37:36 Start CommTcpMap so!
+2016-02-17 14:37:36 start ListenPosThread!
+2016-02-17 14:37:36 start RecvFormPos!
+2016-02-17 14:37:36 Start ListenServerThread!
+2016-02-17 14:37:36 start RecvFormServer!
+2016-02-17 14:37:37 RecvFormPos succeed!
+2016-02-17 14:37:37 start SendToServer!
+2016-02-17 14:37:37 SendToServer succeed!
+2016-02-17 14:37:37 start RecvFormPos!
+2016-02-17 14:37:37 RecvFormSever succeed!
+2016-02-17 14:37:37 start SendToPos!
+2016-02-17 14:37:37 SendToPos succeed!
+2016-02-17 14:37:37 start RecvFormServer!
+2016-02-17 14:37:40 RecvFormSever succeed!
+2016-02-17 14:37:40 start SendToPos!
+2016-02-17 14:37:40 SendToPos succeed!
+2016-02-17 14:37:40 start RecvFormServer!
+2016-02-17 14:37:40 RecvFormPos succeed!
+2016-02-17 14:37:40 start SendToServer!
+2016-02-17 14:37:40 SendToServer succeed!
+2016-02-17 14:37:40 start RecvFormPos!
+2016-02-17 14:38:10 RecvFormSever succeed!
+2016-02-17 14:38:10 start SendToPos!
+2016-02-17 14:38:10 SendToPos succeed!
+2016-02-17 14:38:15 RecvFormPos timeout, end ListenPosThread!
+2016-02-17 14:38:15 CloseComm
+2016-02-17 14:38:15 CloseComm failed!
+2016-02-17 15:41:27 Start CommTcpMap so!
+2016-02-17 15:41:27 start ListenPosThread!
+2016-02-17 15:41:27 start RecvFormPos!
+2016-02-17 15:41:27 iPosCommuType is error!
+2016-02-17 15:41:27 RecvFormPos error, end ListenPosThread!
+2016-02-17 15:41:27 CloseComm
+2016-02-17 15:41:27 CloseComm failed!
+2016-02-17 15:53:40 Start CommTcpMap so!
+2016-02-17 15:53:40 Start ListenPosThread!
+2016-02-17 15:53:40 start RecvFormPos!
+2016-02-17 15:53:40 iPosCommuType is error!
+2016-02-17 15:53:40 RecvFormPos error, end ListenPosThread!
+2016-02-17 15:53:40 End ListenPosThread!
+2016-02-17 15:53:40 CloseComm
+2016-02-17 15:53:40 CloseComm failed!
+2016-02-17 16:19:06 Start CommTcpMap so!
+2016-02-17 16:19:06 Start ListenPosThread!
+2016-02-17 16:19:06 start RecvFormPos!
+2016-02-17 16:19:06 Start ListenServerThread!
+2016-02-17 16:19:06 start RecvFormServer!
+2016-02-17 16:19:06 RecvFormPos succeed!len = 7
+2016-02-17 16:19:06 start SendToServer!
+2016-02-17 16:19:06 SendToServer succeed!
+2016-02-17 16:19:06 start RecvFormPos!
+2016-02-17 16:19:06 RecvFormSever succeed!len = 128
+2016-02-17 16:19:06 start SendToPos!
+2016-02-17 16:19:06 SendToPos succeed!
+2016-02-17 16:19:06 start RecvFormServer!
+2016-02-17 16:19:06 RecvFormSever succeed!len = 816
+2016-02-17 16:19:06 start SendToPos!
+2016-02-17 16:19:06 SendToPos succeed!
+2016-02-17 16:19:06 start RecvFormServer!
+2016-02-17 16:19:06 RecvFormSever succeed!len = 816
+2016-02-17 16:19:06 start SendToPos!
+2016-02-17 16:19:06 SendToPos succeed!
+2016-02-17 16:19:06 start RecvFormServer!
+2016-02-17 16:19:06 RecvFormSever succeed!len = 282
+2016-02-17 16:19:06 start SendToPos!
+2016-02-17 16:19:06 SendToPos succeed!
+2016-02016-02-17 16:22:56 Start CommTcpMap so!
+2016-02-17 16:22:56 Start ListenPosThread!
+2016-02-17 16:22:56 start RecvFormPos!
+2016-02-17 16:22:56 Start ListenServerThread!
+2016-02-17 16:22:56 start RecvFormServer!
+2016-02-17 16:22:57 RecvFormPos succeed!len = 7
+2016-02-17 16:22:57 start SendToServer!
+2016-02-17 16:22:57 SendToServer succeed!
+2016-02-17 16:22:57 start RecvFormPos!
+2016-02-17 16:22:57 RecvFormSever succeed!len = 128
+2016-02-17 16:22:57 start SendToPos!
+2016-02-17 16:22:57 SendToPos succeed!
+2016-02-17 16:22:57 start RecvFormServer!
+2016-02-17 16:22:57 RecvFormSever succeed!len = 816
+2016-02-17 16:22:57 start SendToPos!
+2016-02-17 16:22:57 SendToPos succeed!
+2016-02-17 16:22:57 start RecvFormServer!
+2016-02-17 16:22:57 RecvFormSever succeed!len = 816
+2016-02-17 16:22:57 start SendToPos!
+2016-02-17 16:22:57 SendToPos succeed!
+2016-02-17 16:22:57 start RecvFormServer!
+2016-02-17 16:22:57 RecvFormSever succeed!len = 282
+2016-02-17 16:22:57 start SendToPos!
+2016-02-17 16:22:57 SendToPos succeed!
+2016-02016-02-17 16:32:33 Start CommTcpMap so!
+2016-02-17 16:32:33 Start ListenPosThread!
+2016-02-17 16:32:33 start RecvFormPos!
+2016-02-17 16:32:33 Start ListenServerThread!
+2016-02-17 16:32:33 start RecvFormServer!
+2016-02-17 16:32:33 RecvFormPos succeed!len = 7
+2016-02-17 16:32:33 start SendToServer!
+2016-02-17 16:32:33 SendToServer succeed!
+2016-02-17 16:32:33 start RecvFormPos!
+2016-02-17 16:32:33 RecvFormSever succeed!len = 2048
+2016-02-17 16:32:33 start SendToPos!
+2016-02-17 16:32:33 SendToPos succeed!
+2016-02-17 16:32:33 start RecvFormServer!
+2016-02-17 16:32:36 RecvFormSever succeed!len = 2048
+2016-02-17 16:32:36 start SendToPos!
+2016-02-17 16:32:36 SendToPos succeed!
+2016-02-17 16:32:36 start RecvFormServer!
+2016-02-17 16:32:36 RecvFormPos succeed!len = 5
+2016-02-17 16:32:36 start SendToServer!
+2016-02-17 16:32:36 SendToServer succeed!
+2016-02-17 16:32:36 start RecvFormPos!
+2016-02-17 16:33:06 RecvFormSever succeed!len = 0
+2016-02-17 16:33:06 start SendToPos!
+2016-02-17 16:33:06 SendToPos succeed!
+2016-02-17 16:33:06 End ListenServerThread!
+2016-02-17 16:33:11 RecvFormPos timeout, end ListenPosThread!
+2016-02-17 16:33:11 End ListenPosThread!
+2016-02-17 16:33:11 CloseComm
+2016-02-17 16:33:11 CloseComm failed!

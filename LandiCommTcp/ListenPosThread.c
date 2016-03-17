@@ -8,6 +8,9 @@
  * –ﬁ∏ƒ»’÷æ   :
 ***********************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 #include "ListenPosThread.h"
 #include "Commu.h"
@@ -32,14 +35,17 @@ void* ListenPosThread(void* arg)
 	unsigned int iDataLen = 0;
 	int iRet = 0;
 
-	LOG("start ListenPosThread!");
+	LOG("Start ListenPosThread!");
 
 	while(1)
 	{
+		iDataLen = DATE_BUF_LEN;
+		memset(szDataBuf, 0x00, iDataLen);
 		iRet = RecvFormPos(szDataBuf, iDataLen);
 		if(iRet >= 0)
 		{
 			iDataLen = iRet;
+			LOG("RecvFormPos succeed!len = %d", iDataLen);
 		}
 		else if(COMM_RET_ERROR == iRet)
 		{
@@ -60,10 +66,11 @@ void* ListenPosThread(void* arg)
 		iRet = SendToServer(szDataBuf, iDataLen);
 		if(iRet <= 0)
 		{
-			//TODO:log
-			LOG("TcpSend failed!");
+			break;
 		}
 	}
+
+	LOG("End ListenPosThread!");
 }
 
 

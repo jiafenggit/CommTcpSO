@@ -10,7 +10,7 @@
 #ifndef _DATA_OP_H_
 #define _DATA_OP_H_
 
-#define MWORD(h, l) ((h)*0x10 + l)
+#define WORD(h, l) ((h)*0x100 + l)
 
 #endif
 

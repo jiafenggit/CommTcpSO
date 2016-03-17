@@ -26,11 +26,11 @@
 #include <signal.h>
 
 
-#define WORD(h, l) ((h)*0x10 + l)
+#define WORD(h, l) ((h)*0x100 + l)
 
 
 #define DATE_BUF_LEN_SIZE 2 //长度域的长度
-#define SOCKET_DATA_SIZE 2048
+#define SOCKET_DATA_SIZE (4*1024)
 
 #define RECV_TIME_OUT 30 //30秒
 
@@ -89,39 +89,62 @@ int main()
 	printf("accept client %s\n", inet_ntoa(remote_addr.sin_addr));
 
 	//接收下载请求
+	memset(buf, 0x00, SOCKET_DATA_SIZE);
 	iRet = RecvData(fdTms1, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
-	if(iRet != COMM_RET_SUCCESS)
+	if(iRet < COMM_RET_SUCCESS)
 	{
+		printf("1.RecvData failed!\n");
 		return -4;
+	}
+	else
+	{
+		len = iRet - DATE_BUF_LEN_SIZE;
 	}
 
 	if(len != strlen(START_STR))
 	{
+		printf("recv data len error!\n");
 		close(fdTms1);
 		close(fdTms2);
-		return 0;
+		return -5;
 	}
 	else
 	{
 		if(0 != strcmp(START_STR, buf + DATE_BUF_LEN_SIZE))
 		{
+			printf("recv wrong message!\n");
 			close(fdTms1);
 			close(fdTms2);
-			return 0;
+			return -6;
+		}
+		else
+		{
+			printf("recv start str.\n");
 		}
 	}
 
 	//发送握手
-	len = SendData(fdTms1, "start tms download!", strlen("start tms download!"));
+	printf("send message 1.\n");
+	memset(buf, 0x30, SOCKET_DATA_SIZE / 2);
+	len = SendData(fdTms1, buf, SOCKET_DATA_SIZE / 2);
+
+	sleep(3);
 
 	//发送数据
-	len = SendData(fdTms1, "TMS_FILE TMS_FILE ", strlen("TMS_FILE TMS_FILE "));
+	printf("send message 2.\n");
+	memset(buf, 0x31, SOCKET_DATA_SIZE / 2);
+	len = SendData(fdTms1, buf, SOCKET_DATA_SIZE / 2);
 
 	//接收下载结束报文
 	iRet = RecvData(fdTms1, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
-	if(iRet != COMM_RET_SUCCESS)
+	if(iRet < COMM_RET_SUCCESS)
 	{
-		return -4;
+		printf("2.RecvData failed!\n");
+		return -7;
+	}
+	else
+	{
+		len = iRet - DATE_BUF_LEN_SIZE;
 	}
 
 	if(len != strlen(END_STR))
@@ -138,6 +161,10 @@ int main()
 			close(fdTms2);
 			return 0;
 		}
+		else
+		{
+			printf("recv end str.\n");
+		}
 	}
 
 	close(fdTms1);
@@ -152,18 +179,19 @@ int SendData(int iFD, char *pDataBuf, unsigned int iDataLen)
 	char SendBuf[SOCKET_DATA_SIZE] = {0};
 	unsigned int iLen = 0;
 
-	if(NULL == pDataBuf || 0 == iDataLen || iDataLen >= 0x100)
+	if(NULL == pDataBuf || 0 == iDataLen || iDataLen >= SOCKET_DATA_SIZE)
 	{
 		return -1;
 	}
 
-	SendBuf[DATE_BUF_LEN_SIZE -2] = iDataLen / 0x10;//高位
-	SendBuf[DATE_BUF_LEN_SIZE -1] = iDataLen % 0x10;//低位
+	SendBuf[DATE_BUF_LEN_SIZE -2] = iDataLen / 0x100;//高位
+	SendBuf[DATE_BUF_LEN_SIZE -1] = iDataLen % 0x100;//低位
 	iLen += DATE_BUF_LEN_SIZE;
 
 	memcpy(SendBuf + DATE_BUF_LEN_SIZE, pDataBuf, iDataLen);
 	iLen += iDataLen;
 
+	printf("Tms send data len = %d\n", iLen);
 	iLen = send(iFD, SendBuf, iLen, 0);
 
 	return iLen;
@@ -200,8 +228,8 @@ int RecvData(int iFD, char *pDataBuf, unsigned int iBufSize, unsigned int iTimeO
 		}
 		else
 		{
-			printf("recv str:%s\n", pDataBuf + DATE_BUF_LEN_SIZE);
 			iRet = iLen + DATE_BUF_LEN_SIZE;
+			printf("TMS recv len = %d\n", iRet);
 			break;
 		}
 	}

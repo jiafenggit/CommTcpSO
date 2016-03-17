@@ -120,7 +120,7 @@ int SocketClient(void)
 		perror("connect failed");
 		return -2;
 	}
-	printf("connected to server/n");
+	printf("connected to server\n");
 
 //	len = send(client_sockfd,buf, strlen(buf), 0);
 //	len = recv(client_sockfd, buf, SOCKET_DATA_SIZE, 0);
@@ -179,7 +179,7 @@ int SocketServer(void)
 		perror("accept failed");
 		return -3;
 	}
-	printf("accept client %s/n", inet_ntoa(remote_addr.sin_addr));
+	printf("accept client %s\n", inet_ntoa(remote_addr.sin_addr));
 
 //	len = send(client_sockfd, "Welcome to my server/n",21,0);//∑¢ÀÕª∂”≠–≈œ¢
 //	len = recv(client_sockfd, buf, BUFSIZ, 0);
