@@ -89,7 +89,7 @@ int SendToPos(char *pDataBuf, unsigned int iDataLen)
 		return -1;
 	}
 
-	LOG("start SendToPos!");
+//	LOG("start SendToPos!");
 
 	if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
 	{
@@ -106,7 +106,7 @@ int SendToPos(char *pDataBuf, unsigned int iDataLen)
 
 	if (iLen == iDataLen)
 	{
-		LOG("SendToPos succeed!");
+//		LOG("SendToPos succeed!");
 		return iLen;
 	}
 	else
@@ -145,7 +145,7 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 		return COMM_RET_ERROR;
 	}
 
-	LOG("start RecvFormPos!");
+//	LOG("start RecvFormPos!");
 
 	iTime = s_CommPara.iTimeOut;
 	while(iTime > 0)
@@ -233,13 +233,13 @@ int SendToServer(char *pDataBuf, unsigned int iDataLen)
 		return -1;
 	}
 
-	LOG("start SendToServer!");
+//	LOG("start SendToServer!");
 
 	iLen = send(s_CommPara.fdServer, pDataBuf, iDataLen, 0);
 
 	if (iLen == iDataLen)
 	{
-		LOG("SendToServer succeed!");
+//		LOG("SendToServer succeed!");
 		return iLen;
 	}
 	else
@@ -274,7 +274,7 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 		return COMM_RET_ERROR;
 	}
 
-	LOG("start RecvFormServer!");
+//	LOG("start RecvFormServer!");
 
 	iTime = s_CommPara.iTimeOut;
 	while(iTime > 0)

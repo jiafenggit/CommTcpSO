@@ -86,6 +86,7 @@ int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, unsigned int iTi
 		}
 		else
 		{
+			iRet = -1;
 		}
 	}
 

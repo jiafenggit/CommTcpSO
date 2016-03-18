@@ -148,6 +148,10 @@ int SocketServer(void)
 	struct sockaddr_in remote_addr; //客户端网络地址结构体
 	int sin_size;
 	char buf[SOCKET_DATA_SIZE];  //数据传送的缓冲区
+	unsigned int MisServerPort = 8000;
+
+	//读取配置文件
+	
 
 	memset(&my_addr, 0, sizeof(my_addr)); //数据初始化--清零
 	my_addr.sin_family = AF_INET; //设置为IP通信
