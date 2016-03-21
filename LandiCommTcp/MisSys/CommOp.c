@@ -59,7 +59,8 @@ int StartCommOp(int *fdPos, int *iPosCommuType, int *fdServer)
 		return -1;
 	}
 
-	iMisCommType = GetConfigFileIntValue(COMMU_TYPE, POS_COMMU_TYPE, 0);
+	iMisCommType = GetConfigFileIntValue(COMMU_PARA, MIS_COMMU_TYPE, 0);
+	printf("MisCommType = %d\n", iMisCommType);
 
 	if(POS_COMMU_TYPE_TCP == iMisCommType)
 	{
@@ -68,6 +69,10 @@ int StartCommOp(int *fdPos, int *iPosCommuType, int *fdServer)
 		{
 			return iRet;
 		}
+	}
+	else
+	{
+		printf("MisCommType error!\n");
 	}
 
 	iRet = SocketClient();
@@ -98,14 +103,30 @@ int StartCommOp(int *fdPos, int *iPosCommuType, int *fdServer)
 *****************************************************************************/
 int SocketClient(void)
 {
-	int len;
+	int len, iRet;
 	struct sockaddr_in remote_addr; //服务器端网络地址结构体
 	char buf[SOCKET_DATA_SIZE];  //数据传送的缓冲区
+	char TmsServerIp[16] = {0};
+	unsigned int TmsServerPort = 8000;
+
+	GetConfigFileStringValue(COMMU_PARA, TMS_SERVER_IP, "127.0.0.1", TmsServerIp, sizeof(TmsServerIp));
+	TmsServerPort = GetConfigFileIntValue(COMMU_PARA, TMS_SERVER_PORT, 8000);
+	printf("TmsServerIP = %s, port = %d\n", TmsServerIp, TmsServerPort);
 
 	memset(&remote_addr, 0, sizeof(remote_addr)); //数据初始化--清零
 	remote_addr.sin_family = AF_INET; //设置为IP通信
 	remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");//服务器IP地址
-	remote_addr.sin_port = htons(8099); //TMS服务器端口号
+	remote_addr.sin_port = htons(TmsServerPort); //TMS服务器端口号
+	iRet = inet_pton(AF_INET, TmsServerIp, &remote_addr.sin_addr.s_addr);
+	if(0 > iRet)
+	{
+		perror("error: first parameter is not a valid address family");
+		return iRet;
+	}
+	else if(0 == iRet)
+	{
+		perror("char string second parameter does not contain valid ipaddress");
+	}
 
 	/*创建客户端套接字--IPv4协议，面向连接通信，TCP协议*/
 	if((s_fdServer = socket(PF_INET, SOCK_STREAM, 0))<0)
@@ -115,7 +136,7 @@ int SocketClient(void)
 	}
 
 	/*将套接字绑定到服务器的网络地址上*/
-	if(connect(s_fdServer, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr))<0)
+	if(connect(s_fdServer, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr)) < 0)
 	{
 		perror("connect failed");
 		return -2;
@@ -151,12 +172,13 @@ int SocketServer(void)
 	unsigned int MisServerPort = 8000;
 
 	//读取配置文件
-	
+	MisServerPort = GetConfigFileIntValue(COMMU_PARA, MIS_SERVER_PORT, 8000);
+	printf("MisServerPort = %d \n", MisServerPort);
 
 	memset(&my_addr, 0, sizeof(my_addr)); //数据初始化--清零
 	my_addr.sin_family = AF_INET; //设置为IP通信
 	my_addr.sin_addr.s_addr = INADDR_ANY;//服务器IP地址--允许连接到所有本地地址上
-	my_addr.sin_port = htons(8088); //服务器端口号
+	my_addr.sin_port = htons(MisServerPort); //服务器端口号
 
 	/*创建服务器端套接字--IPv4协议，面向连接通信，TCP协议*/
 	if((s_fdPos2 = socket(PF_INET, SOCK_STREAM, 0)) < 0)
@@ -198,10 +220,10 @@ int SocketServer(void)
  * 函数功能  : 关闭socket句柄
  * 输入参数  : 无
  * 输出参数  : 无
- * 返 回 值     : 
- * 调用关系  : 
- * 其    它        : 
- * 修    改        : 
+ * 返 回 值     :
+ * 调用关系  :
+ * 其    它        :
+ * 修    改        :
 
 *****************************************************************************/
 void CloseCommu(void)

@@ -55,11 +55,15 @@ int main()
 	int sin_size;
 	char buf[SOCKET_DATA_SIZE];  //数据传送的缓冲区
 	unsigned int iTime = 0;
+	unsigned int TmsServerPort = 8099;
+
+	printf("running...\n");
 
 	memset(&my_addr, 0, sizeof(my_addr)); //数据初始化--清零
 	my_addr.sin_family = AF_INET; //设置为IP通信
 	my_addr.sin_addr.s_addr = INADDR_ANY;//服务器IP地址--允许连接到所有本地地址上
-	my_addr.sin_port = htons(8099); //TMS服务器端口号
+	printf("TmsServerPort = %d\n", TmsServerPort);
+	my_addr.sin_port = htons(TmsServerPort); //TMS服务器端口号
 
 	/*创建服务器端套接字--IPv4协议，面向连接通信，TCP协议*/
 	if((fdTms2 = socket(PF_INET, SOCK_STREAM, 0)) < 0)

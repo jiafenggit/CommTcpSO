@@ -20,6 +20,8 @@
 typedef unsigned char   UINT8;
 typedef signed   int    INT32;
 typedef unsigned int    UINT32;
+typedef signed short INT16;
+typedef unsigned short UINT16;
 
 #endif
 
