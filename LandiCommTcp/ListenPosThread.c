@@ -39,13 +39,15 @@ void* ListenPosThread(void* arg)
 
 	while(1)
 	{
+		iRet = COMM_RET_SUCCESS;
 		iDataLen = DATE_BUF_LEN;
 		memset(szDataBuf, 0x00, iDataLen);
 		iRet = RecvFormPos(szDataBuf, iDataLen);
 		if(iRet >= 0)
 		{
 			iDataLen = iRet;
-			LOG("RecvFormPos succeed!len = %d", iDataLen);
+			LOG("RecvFormPos succeed!", iDataLen);
+			mLogArrayPrint(iDataLen, szDataBuf);
 		}
 		else if(COMM_RET_ERROR == iRet)
 		{
@@ -67,6 +69,11 @@ void* ListenPosThread(void* arg)
 		if(iRet <= 0)
 		{
 			break;
+		}
+		else if(iDataLen == iRet)
+		{
+//			LOG("SendToServer succeed!", iDataLen);
+//			mLogArrayPrint(iDataLen, szDataBuf);
 		}
 	}
 

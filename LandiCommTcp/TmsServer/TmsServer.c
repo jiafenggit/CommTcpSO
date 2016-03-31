@@ -134,8 +134,25 @@ int main()
 
 	sleep(3);
 
+	//接收数据
+	memset(buf,0x00, SOCKET_DATA_SIZE);
+	iRet = RecvData(fdTms1, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	if(iRet < COMM_RET_SUCCESS)
+	{
+		printf("2.RecvData failed!\n");
+		return -7;
+	}
+
+	sleep(3);
+
 	//发送数据
 	printf("send message 2.\n");
+	memset(buf, 0x31, SOCKET_DATA_SIZE / 2);
+	len = SendData(fdTms1, buf, SOCKET_DATA_SIZE / 2);
+	sleep(3);
+
+	//发送数据
+	printf("send message 3.\n");
 	memset(buf, 0x31, SOCKET_DATA_SIZE / 2);
 	len = SendData(fdTms1, buf, SOCKET_DATA_SIZE / 2);
 

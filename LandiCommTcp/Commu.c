@@ -136,7 +136,7 @@ int SendToPos(char *pDataBuf, unsigned int iDataLen)
 int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 {
 	int iRet = 0;
-	unsigned int iLen = 0;
+	unsigned int iLen = 0, iRecvLen = 0;
 	char szTmpBuf[8] = {0};
 	unsigned int iTime = 0;
 
@@ -152,11 +152,11 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 	{
 		if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
 		{
-			iLen = read(s_CommPara.fdPos, szTmpBuf, DATE_BUF_LEN_SIZE);
+			iRet = read(s_CommPara.fdPos, pDataBuf, iDataLen);
 		}
 		else if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
 		{
-			iLen = recv(s_CommPara.fdPos, pDataBuf, DATE_BUF_LEN_SIZE, 0);
+			iRet = recv(s_CommPara.fdPos, pDataBuf, iDataLen, 0);
 		}
 		else
 		{
@@ -164,38 +164,10 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 			return COMM_RET_ERROR;
 		}
 
-		if(DATE_BUF_LEN_SIZE == iLen)
+		if(iRet > 0)
 		{
-			iLen = WORD(pDataBuf[0], pDataBuf[1]);
-			if(iLen > (iDataLen - DATE_BUF_LEN_SIZE))
-			{
-				iRet = COMM_RET_ERROR;
-				LOG("RecvFormPos data len over buf size!");
-				break;
-			}
-
-			if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
-			{
-				iLen = read(s_CommPara.fdPos, szTmpBuf + DATE_BUF_LEN_SIZE, iLen);
-			}
-			else if(POS_COMMU_TYPE_TCP == s_CommPara.iPosCommuType)
-			{
-				iLen = recv(s_CommPara.fdPos, pDataBuf + DATE_BUF_LEN_SIZE, iLen, 0);
-			}
-
-			if(iLen <= 0)
-			{
-				iTime--;
-				sleep(1);
-
-				iRet = COMM_RET_TIMEOUT;
-				continue;
-			}
-			else
-			{
-				iRet = iLen + DATE_BUF_LEN_SIZE;
-				break;
-			}
+			mLogArrayPrint(iRet, pDataBuf);
+			break;
 		}
 		else
 		{
@@ -266,7 +238,7 @@ int SendToServer(char *pDataBuf, unsigned int iDataLen)
 int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 {
 	int iRet = 0;
-	unsigned int iLen = 0;
+	unsigned int iLen = 0, iRecvLen = 0;
 	unsigned int iTime = 0;
 
 	if(NULL == pDataBuf)
@@ -279,31 +251,12 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 	iTime = s_CommPara.iTimeOut;
 	while(iTime > 0)
 	{
-		iLen = recv(s_CommPara.fdServer, pDataBuf, DATE_BUF_LEN_SIZE, 0);
-		if(DATE_BUF_LEN_SIZE == iLen)
+		iRet = recv(s_CommPara.fdServer, pDataBuf, iDataLen, 0);
+
+		if(iRet > 0)
 		{
-			iLen = WORD(pDataBuf[0], pDataBuf[1]);
-			if(iLen > (iDataLen - DATE_BUF_LEN_SIZE))
-			{
-				iRet = COMM_RET_ERROR;
-				LOG("RecvFormSever data len over buf size!");
-				break;
-			}
-
-			iLen = recv(s_CommPara.fdServer, pDataBuf + DATE_BUF_LEN_SIZE, iLen, 0);
-			if(iLen <= 0)
-			{
-				iTime--;
-				sleep(1);
-
-				iRet = COMM_RET_TIMEOUT;
-				continue;
-			}
-			else
-			{
-				iRet = iLen + DATE_BUF_LEN_SIZE;
-				break;
-			}
+			mLogArrayPrint(iRet, pDataBuf);
+			break;
 		}
 		else
 		{
@@ -315,7 +268,7 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 		}
 	}
 
-	return iLen;
+	return iRet;
 }
 
 /*****************************************************************************

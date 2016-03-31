@@ -32,7 +32,7 @@ static int s_fdPos1 = 0;
 static int s_fdPos2 = 0;
 static int s_fdServer = 0;
 
-#define SOCKET_DATA_SIZE 2048
+#define SOCKET_DATA_SIZE (28*1024)
 
 /*****************************************************************************
  * 函 数 名     : StartCommOp
@@ -115,7 +115,6 @@ int SocketClient(void)
 
 	memset(&remote_addr, 0, sizeof(remote_addr)); //数据初始化--清零
 	remote_addr.sin_family = AF_INET; //设置为IP通信
-	remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");//服务器IP地址
 	remote_addr.sin_port = htons(TmsServerPort); //TMS服务器端口号
 	iRet = inet_pton(AF_INET, TmsServerIp, &remote_addr.sin_addr.s_addr);
 	if(0 > iRet)
@@ -186,6 +185,9 @@ int SocketServer(void)
 		perror("socket failed");
 		return -1;
 	}
+	
+	int flags = fcntl(s_fdPos2, F_GETFL, 0);
+	fcntl(s_fdPos2, F_SETFL, flags | ~O_NONBLOCK);
 
 	/*将套接字绑定到服务器的网络地址上*/
 	if (bind(s_fdPos2, (struct sockaddr *)&my_addr, sizeof(struct sockaddr)) < 0)

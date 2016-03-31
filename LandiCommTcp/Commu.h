@@ -26,7 +26,7 @@ typedef struct
 #define COMM_RET_TIMEOUT	-2
 
 #define DATE_BUF_LEN_SIZE 2 //长度域的长度
-#define DATE_BUF_LEN (4*1024)
+#define DATE_BUF_LEN (28*1024)
 
 #define START_STR "start"
 #define END_STR "end"

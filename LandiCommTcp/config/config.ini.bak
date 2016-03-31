@@ -1,0 +1,3 @@
+[CONFIG]
+;日志等级 1-debug 2-warning 3-error
+LOG_LEVEL = 1

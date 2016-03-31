@@ -45,7 +45,8 @@ void* ListenServerThread(void* arg)
 		if(iRet >= 0)
 		{
 			iDataLen = iRet;
-			LOG("RecvFormSever succeed!len = %d", iDataLen);
+			LOG("RecvFormSever succeed!", iDataLen);
+			mLogArrayPrint(iDataLen, szDataBuf);
 		}
 		else if(COMM_RET_ERROR == iRet)
 		{
@@ -67,6 +68,11 @@ void* ListenServerThread(void* arg)
 		if(iRet <= 0)
 		{
 			break;
+		}
+		else if(iDataLen == iRet)
+		{
+//			LOG("SendToPos succeed!", iDataLen);
+//			mLogArrayPrint(iDataLen, szDataBuf);
 		}
 	}
 

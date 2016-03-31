@@ -14,7 +14,7 @@
 void OpenMyLog(char *szSoPath);//打开日志文件
 void CloseMyLog();//关闭日志
 void LOG(const char* ms, ... );//记录日志
-
+void mLogArrayPrint(unsigned int iLength, const void * pvData);//日志输出字符串数组内容
 
 #endif
 

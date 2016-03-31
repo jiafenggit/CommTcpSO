@@ -20,6 +20,11 @@
 
 static FILE* file = NULL;
 
+
+#define LOG_BUF_LEN 1024
+#define MAX_PRINT_SIZE 128
+#define PRINT_ADDR_LEN 11
+
 /*****************************************************************************
  * 函 数 名     : OpenMyLog
  * 负 责 人     : harry
@@ -42,6 +47,12 @@ void OpenMyLog(char *szSoPath)
 	unsigned char szTime[16] = {0};
 	time_t t;
 	struct tm *nowtime;
+
+	if(NULL == szSoPath)
+	{
+		printf("SoPath is NULL!\n");
+		return ;
+	}
 
 	//组织log文件路径
 	iSoPathLen = strlen(szSoPath);
@@ -107,8 +118,8 @@ void CloseMyLog()
 *****************************************************************************/
 void LOG(const char* ms, ... )
 {
-	unsigned char wzLog[1024] = {0};
-	unsigned char buffer[1024] = {0};
+	unsigned char wzLog[LOG_BUF_LEN] = {0};
+	unsigned char buffer[LOG_BUF_LEN] = {0};
 	va_list args;
 	va_start(args, ms);
 	vsprintf( wzLog ,ms,args);
@@ -128,6 +139,77 @@ void LOG(const char* ms, ... )
 	fwrite(buffer,1, strlen(buffer), file);
 
 	return ;
+}
+
+/*****************************************************************************
+ * 函 数 名     : mLogArrayPrint
+ * 负 责 人     : harry
+ * 创建日期  : 2016年3月22日
+ * 函数功能  : 日志输出字符串数组内容
+ * 输入参数  : unsigned int iLength  数据长度
+               const void * pvData   数据内容
+ * 输出参数  : 无
+ * 返 回 值     :
+ * 调用关系  :
+ * 其    它        :
+ * 修    改        :
+
+*****************************************************************************/
+void mLogArrayPrint(unsigned int iLength, const void * pvData)
+{
+	//参数判断
+	if(NULL == pvData || 0 == iLength)
+	{
+		return;
+	}
+
+	return ;
+
+	do
+	{
+		const unsigned char *pcData = (const unsigned char *) pvData;
+		char szPrintBuf[MAX_PRINT_SIZE] = {0};
+		unsigned int iPrintLen = 0;
+		unsigned int i = 0;
+		unsigned int iOneLineLength = 0;
+		unsigned int iCurIndex = 0;
+
+		//打印长度值
+		memset(szPrintBuf, 0x00, MAX_PRINT_SIZE);
+		snprintf(szPrintBuf, MAX_PRINT_SIZE - 1, "DataLen = %d \r\n", iLength);
+		iPrintLen = strlen(szPrintBuf) + 2;
+		fwrite(szPrintBuf, 1, iPrintLen, file);
+
+		for(i = 0; i < iLength; )
+		{
+			memset(szPrintBuf, 0x00, MAX_PRINT_SIZE);
+
+			iOneLineLength = iLength - i > 16 ? 16 : iLength - i;//当前显示行的长度
+
+			//以16进制格式化输出数据
+			for(iCurIndex = 0; iCurIndex < iOneLineLength; iCurIndex++)
+			{
+				snprintf(&szPrintBuf[iCurIndex * 3], MAX_PRINT_SIZE - iCurIndex * 3, "%02X ", pcData[i + iCurIndex]);
+			}
+
+			//后补空格
+			for(; iCurIndex < 16; iCurIndex++)
+			{
+				memset(&szPrintBuf[iCurIndex * 3], ' ', 3);
+			}
+
+			szPrintBuf[16 * 3] = ' ';
+			szPrintBuf[16 * 3 + 1] = ' ';
+
+			strcpy(&szPrintBuf[16 * 3 + 2], "\r\n");
+
+			iPrintLen = 16 * 3 + 2 + 2;
+			i += iOneLineLength;
+			fwrite(szPrintBuf, 1, iPrintLen, file);
+		}
+
+	}
+	while(0);
 }
 
 

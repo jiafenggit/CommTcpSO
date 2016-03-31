@@ -92,7 +92,23 @@ int main()
 		return -7;
 	}
 
+	//发送数据
+	printf("send message 1.\n");
+	memset(buf, 0x30, SOCKET_DATA_SIZE / 2);
+	len = SendData(fdMis, buf, SOCKET_DATA_SIZE / 2);
+
 	//接收数据
+	memset(buf,0x00, SOCKET_DATA_SIZE);
+	iRet = RecvData(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	if(iRet < COMM_RET_SUCCESS)
+	{
+		printf("2.RecvData failed!\n");
+		return -7;
+	}
+
+	sleep(3);
+
+	//接收握手应答
 	memset(buf,0x00, SOCKET_DATA_SIZE);
 	iRet = RecvData(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
 	if(iRet < COMM_RET_SUCCESS)
