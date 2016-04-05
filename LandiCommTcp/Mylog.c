@@ -53,15 +53,22 @@ void OpenMyLog(char *szSoPath)
 		printf("SoPath is NULL!\n");
 		return ;
 	}
+	else
+	{
+		strcpy(szSoLogPath, szSoPath);
+	}
 
 	//组织log文件路径
-	iSoPathLen = strlen(szSoPath);
-	printf("szSoPath = %s, iSoPathLen = %d\n", szSoPath, iSoPathLen);
-	if(szSoPath[iSoPathLen - 1] == '/')
+	iSoPathLen = strlen(szSoLogPath);
+	printf("szSoLogPath = %s, iSoLogPathLen = %d\n", szSoLogPath, iSoPathLen);
+	if(szSoLogPath[iSoPathLen - 1] == '/')
 	{
-		szSoPath[iSoPathLen - 1] = 0;
+		sprintf(szSoLogPath, "%sLandiSoLog/", szSoLogPath);
 	}
-	sprintf(szSoLogPath, "%s/LandiSoLog/", szSoPath);
+	else
+	{
+		sprintf(szSoLogPath, "%s/LandiSoLog/", szSoLogPath);
+	}
 	printf("%s\n", szSoLogPath);
 
 	//判断文件夹是否存在
@@ -157,13 +164,14 @@ void LOG(const char* ms, ... )
 *****************************************************************************/
 void mLogArrayPrint(unsigned int iLength, const void * pvData)
 {
+#ifndef LOG_LEVEL_DEBUG
+	return ;
+#else
 	//参数判断
 	if(NULL == pvData || 0 == iLength)
 	{
 		return;
 	}
-
-	return ;
 
 	do
 	{
@@ -209,7 +217,8 @@ void mLogArrayPrint(unsigned int iLength, const void * pvData)
 		}
 
 	}
-	while(0);
+	whilE(0);
+#endif
 }
 
 

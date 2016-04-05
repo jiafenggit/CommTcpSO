@@ -23,7 +23,6 @@
 #include "ListenServerThread.h"
 #include "MyLog.h"
 
-
 /*****************************************************************************
  * 函 数 名     : StartCommTcpMap
  * 负 责 人     : harry
@@ -87,6 +86,7 @@ int StartCommTcpMap(int fdPOS, int iPosCommuType, int fdServer, unsigned int iTi
 		else
 		{
 			iRet = -1;
+			sleep(1);
 		}
 	}
 

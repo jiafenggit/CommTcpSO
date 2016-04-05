@@ -11,6 +11,7 @@
 #define _COMMU_H_
 
 
+
 //通讯参数结构
 typedef struct
 {

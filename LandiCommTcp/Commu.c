@@ -166,7 +166,7 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 
 		if(iRet > 0)
 		{
-			mLogArrayPrint(iRet, pDataBuf);
+//			mLogArrayPrint(iRet, pDataBuf);
 			break;
 		}
 		else
@@ -255,7 +255,7 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 
 		if(iRet > 0)
 		{
-			mLogArrayPrint(iRet, pDataBuf);
+//			mLogArrayPrint(iRet, pDataBuf);
 			break;
 		}
 		else

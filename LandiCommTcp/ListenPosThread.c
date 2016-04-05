@@ -16,6 +16,7 @@
 #include "Commu.h"
 #include "MyLog.h"
 
+
 /*****************************************************************************
  * 函 数 名     : ListenPosThread
  * 负 责 人     : harry
@@ -46,8 +47,10 @@ void* ListenPosThread(void* arg)
 		if(iRet >= 0)
 		{
 			iDataLen = iRet;
+#ifdef LOG_LEVEL_DEBUG
 			LOG("RecvFormPos succeed!", iDataLen);
 			mLogArrayPrint(iDataLen, szDataBuf);
+#endif		
 		}
 		else if(COMM_RET_ERROR == iRet)
 		{
@@ -72,8 +75,10 @@ void* ListenPosThread(void* arg)
 		}
 		else if(iDataLen == iRet)
 		{
-//			LOG("SendToServer succeed!", iDataLen);
-//			mLogArrayPrint(iDataLen, szDataBuf);
+#ifdef LOG_LEVEL_DEBUG
+			LOG("SendToServer succeed!", iDataLen);
+			mLogArrayPrint(iDataLen, szDataBuf);
+#endif
 		}
 	}
 
