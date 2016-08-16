@@ -147,7 +147,7 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 
 //	LOG("start RecvFormPos!");
 
-	iTime = s_CommPara.iTimeOut;
+	iTime = s_CommPara.iTimeOut * 10;//–›√ﬂ ±º‰100∫¡√Î
 	while(iTime > 0)
 	{
 		if(POS_COMMU_TYPE_COMM == s_CommPara.iPosCommuType)
@@ -172,7 +172,8 @@ int RecvFormPos(char *pDataBuf, unsigned int iDataLen)
 		else
 		{
 			iTime--;
-			sleep(1);
+//			sleep(1);
+			usleep(100000);//–›√ﬂ100∫¡√Î
 
 			iRet = COMM_RET_TIMEOUT;
 			continue;
@@ -248,7 +249,7 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 
 //	LOG("start RecvFormServer!");
 
-	iTime = s_CommPara.iTimeOut;
+	iTime = s_CommPara.iTimeOut * 10;
 	while(iTime > 0)
 	{
 		iRet = recv(s_CommPara.fdServer, pDataBuf, iDataLen, 0);
@@ -261,7 +262,8 @@ int RecvFormSever(char *pDataBuf, unsigned int iDataLen)
 		else
 		{
 			iTime--;
-			sleep(1);
+//			sleep(1);
+			usleep(100000);//–›√ﬂ100∫¡√Î
 
 			iRet = COMM_RET_TIMEOUT;
 			continue;

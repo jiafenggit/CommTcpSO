@@ -1,6 +1,6 @@
 /*
 ±‡“Î÷¥––”Ôæ‰
-gcc MisSys.c CommOp.c GetConfig.c -lpthread -o MisSys ../libLandiCommTcp.so
+gcc MisSys.c CommOp.c GetConfig.c ../ComOp/ComOp.c -lpthread -o MisSys ../libLandiCommTcp.so
 */
 
 #include <stdio.h>

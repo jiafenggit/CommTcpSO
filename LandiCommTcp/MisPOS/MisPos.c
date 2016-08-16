@@ -7,7 +7,7 @@
  * 其    他   :
  * 修改日志   :
  编译执行语句:
- gcc MisPos.c -o MisPos
+ gcc MisPos.c ../ComOp/ComOp.c -o MisPos
 ***********************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +25,8 @@
 #include <arpa/inet.h>
 #include <signal.h>
 
+#include "../ComOp/ComOp.h"
+
 #define WORD(h, l) ((h)*0x100 + l)
 
 
@@ -32,6 +34,9 @@
 #define SOCKET_DATA_SIZE (4*1024)
 
 #define RECV_TIME_OUT 30 //30秒
+
+//通讯类型
+#define COMM_TYPE 1
 
 //通讯操作返回结果
 #define COMM_RET_SUCCESS	0
@@ -42,7 +47,7 @@
 #define END_STR "end"
 
 int SendData(int iFD, char *pDataBuf, unsigned int iDataLen);
-int RecvData(int iFD, char *pDataBuf, unsigned int iBufSize, unsigned int iTimeOut);
+int TCP_Recv(int iFD, char *pDataBuf, unsigned int iBufSize, unsigned int iTimeOut);
 
 
 int main()
@@ -55,24 +60,49 @@ int main()
 	unsigned int iTime = 0;
 	unsigned int MisServerPort = 8088;
 
-	memset(&remote_addr, 0, sizeof(remote_addr)); //数据初始化--清零
-	remote_addr.sin_family = AF_INET; //设置为IP通信
-	remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");//服务器IP地址
-	remote_addr.sin_port = htons(MisServerPort); //MIS服务器端口号
-
-	/*创建客户端套接字--IPv4协议，面向连接通信，TCP协议*/
-	if((fdMis = socket(PF_INET, SOCK_STREAM, 0))<0)
+	// 2是TCP
+	if(2 == COMM_TYPE)
 	{
-		perror("socket failed\n");
-		return -1;
+		memset(&remote_addr, 0, sizeof(remote_addr)); //数据初始化--清零
+		remote_addr.sin_family = AF_INET; //设置为IP通信
+		remote_addr.sin_addr.s_addr = inet_addr("127.0.0.1");//服务器IP地址
+		remote_addr.sin_port = htons(MisServerPort); //MIS服务器端口号
+
+		/*创建客户端套接字--IPv4协议，面向连接通信，TCP协议*/
+		if((fdMis = socket(PF_INET, SOCK_STREAM, 0))<0)
+		{
+			perror("socket failed\n");
+			return -1;
+		}
+
+		/*将套接字绑定到服务器的网络地址上*/
+		if(connect(fdMis, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr))<0)
+		{
+			perror("connect failed\n");
+			return -2;
+		}
 	}
-
-	/*将套接字绑定到服务器的网络地址上*/
-	if(connect(fdMis, (struct sockaddr *)&remote_addr, sizeof(struct sockaddr))<0)
+	else if(1 == COMM_TYPE)// 1是串口
 	{
-		perror("connect failed\n");
+		if(UART_Open(&fdMis, 1) < 0)
+		{
+			perror("UART_Open failed\n");
+			return -1;
+		}
+
+		iRet  = UART_Init(&fdMis, 9600, 0, 8, 1, 'N');
+		if (FALSE == iRet)
+		{
+			printf("Set Port Error\n");
+			return -1;
+		}
+	}
+	else
+	{
+		perror("CommType error!\n");
 		return -2;
 	}
+
 	printf("connected to mis\n");
 
 	printf("Press 'enter' to start TMS:\n");
@@ -85,7 +115,14 @@ int main()
 
 	//接收握手应答
 	memset(buf,0x00, SOCKET_DATA_SIZE);
-	iRet = RecvData(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	if(1 == COMM_TYPE)
+	{
+		iRet = UART_Recv(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	}
+	else
+	{
+		iRet = TCP_Recv(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	}
 	if(iRet < COMM_RET_SUCCESS)
 	{
 		printf("2.RecvData failed!\n");
@@ -99,7 +136,14 @@ int main()
 
 	//接收数据
 	memset(buf,0x00, SOCKET_DATA_SIZE);
-	iRet = RecvData(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	if(1 == COMM_TYPE)
+	{
+		iRet = UART_Recv(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	}
+	else
+	{
+		iRet = TCP_Recv(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	}
 	if(iRet < COMM_RET_SUCCESS)
 	{
 		printf("2.RecvData failed!\n");
@@ -110,7 +154,14 @@ int main()
 
 	//接收握手应答
 	memset(buf,0x00, SOCKET_DATA_SIZE);
-	iRet = RecvData(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	if(1 == COMM_TYPE)
+	{
+		iRet = UART_Recv(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	}
+	else
+	{
+		iRet = TCP_Recv(fdMis, buf, SOCKET_DATA_SIZE, RECV_TIME_OUT);
+	}
 	if(iRet < COMM_RET_SUCCESS)
 	{
 		printf("2.RecvData failed!\n");
@@ -147,17 +198,24 @@ int SendData(int iFD, char *pDataBuf, unsigned int iDataLen)
 	iLen += iDataLen;
 
 	printf("Pos send data len = %d\n", iLen);
-	iLen = send(iFD, SendBuf, iLen, 0);
+	if(1 == COMM_TYPE)
+	{
+		iLen = write(iFD, SendBuf, iLen);
+	}
+	else if(2 == COMM_TYPE)
+	{
+		iLen = send(iFD, SendBuf, iLen, 0);
+	}
 
 	return iLen;
 }
 
 
-int RecvData(int iFD, char *pDataBuf, unsigned int iBufSize, unsigned int iTimeOut)
+int TCP_Recv(int iFD, char *pDataBuf, unsigned int iBufSize, unsigned int iTimeOut)
 {
 	int iRet = COMM_RET_SUCCESS;
 	unsigned int iLen = 0;
-	
+
 	while(iTimeOut > 0)
 	{
 		memset(pDataBuf, 0x00, iBufSize);

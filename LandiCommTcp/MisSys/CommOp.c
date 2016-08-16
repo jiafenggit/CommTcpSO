@@ -14,6 +14,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
 #include <fcntl.h>
 #include <termios.h>
 #include <errno.h>
@@ -25,6 +27,7 @@
 
 #include "CommOp.h"
 #include "GetConfig.h"
+#include "../ComOp/ComOp.h"
 
 //通讯参数全局变量
 static CommPara s_CommPara;
@@ -69,16 +72,20 @@ int StartCommOp(int *fdPos, int *iPosCommuType, int *fdServer)
 		{
 			return iRet;
 		}
+
+		iRet = SocketClient();
+		if(iRet < 0)
+		{
+			return iRet;
+		}
+	}
+	else if(POS_COMMU_TYPE_COMM == iMisCommType)
+	{
+
 	}
 	else
 	{
 		printf("MisCommType error!\n");
-	}
-
-	iRet = SocketClient();
-	if(iRet < 0)
-	{
-		return iRet;
 	}
 
 	*fdPos = s_fdPos1;
@@ -185,7 +192,7 @@ int SocketServer(void)
 		perror("socket failed");
 		return -1;
 	}
-	
+
 	int flags = fcntl(s_fdPos2, F_GETFL, 0);
 	fcntl(s_fdPos2, F_SETFL, flags | ~O_NONBLOCK);
 
@@ -213,6 +220,49 @@ int SocketServer(void)
 //	len = recv(client_sockfd, buf, BUFSIZ, 0);
 
 	return 0;
+}
+
+
+/*****************************************************************************
+ * 函 数 名     : ComClient
+ * 负 责 人     : harry
+ * 创建日期  : 2016年8月16日
+ * 函数功能  : 创建串口客户端
+ * 输入参数  : 无
+ * 输出参数  : 无
+ * 返 回 值     :
+ * 调用关系  :
+ * 其    它        :
+ * 修    改        :
+
+*****************************************************************************/
+int ComClient(void)
+{
+	unsigned int TmsServerPort = 8000;
+	
+	TmsServerPort = GetConfigFileIntValue(COMMU_PARA, TMS_SERVER_PORT, 8000);
+	printf("TmsServerPort = %d\n", TmsServerPort);
+}
+
+/*****************************************************************************
+ * 函 数 名     : ComServer
+ * 负 责 人     : harry
+ * 创建日期  : 2016年8月16日
+ * 函数功能  : 创建串口服务端
+ * 输入参数  : 无
+ * 输出参数  : 无
+ * 返 回 值     :
+ * 调用关系  :
+ * 其    它        :
+ * 修    改        :
+
+*****************************************************************************/
+int ComServer(void)
+{
+	unsigned int MisServerPort = 8000;
+	
+	MisServerPort = GetConfigFileIntValue(COMMU_PARA, MIS_SERVER_PORT, 8000);
+	printf("MisServerPort = %d \n", MisServerPort);
 }
 
 /*****************************************************************************

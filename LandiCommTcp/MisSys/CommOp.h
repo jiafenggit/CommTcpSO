@@ -25,6 +25,8 @@ typedef struct
 int StartCommOp(int *fdPos, int *iPosCommuType, int *fdServer);//开始通讯连接操作
 int SocketClient(void);//创建socket客户端
 int SocketServer(void);//创建socket服务端
+int ComClient(void);//创建串口客户端
+int ComServer(void);//创建串口服务端
 void CloseCommu(void);//关闭socket句柄
 
 #endif
